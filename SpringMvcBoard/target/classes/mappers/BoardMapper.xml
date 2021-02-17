@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.mvc.board.repository.IBoardMapper">
+
+
+	<resultMap id="BoardMap" type="com.spring.mvc.board.model.BoardVO">
+		
+		<id property="boardNo" column="board_no"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="writer" column="writer"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="viewCnt" column="view_cnt"/>
+
+	</resultMap>
+
+
+
+	<insert id="insert">
+		INSERT INTO new_board1 
+		  (title, content, writer)
+		VALUES (#{title}, #{content}, #{writer})
+	</insert>
+
+
+
+<select id="getArticle" resultMap="BoardMap">
+
+SELECT *
+FROM new_board1
+WHERE board_no =#{boardNo}
+
+</select>
+
+
+<select id="getArticleList" resultMap="BoardMap">
+
+SELECT *
+FROM new_board1
+ORDER BY board_no DESC
+LIMIT #{pageStart},#{countPerPage}
+</select>
+
+
+<select id="countArticles" resultType="int"> <!-- countArticles가 Integer 타입이라 resultType이 int이다. -->
+SELECT COUNT(*)
+FROM new_board1
+</select>
+
+<update id="updateViewCnt">
+		UPDATE new_board1 
+		SET view_cnt = view_cnt + 1 
+		WHERE board_no = #{boardNo}
+	</update>
+
+
+
+
+
+</mapper>
