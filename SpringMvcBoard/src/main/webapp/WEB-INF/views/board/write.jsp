@@ -5,6 +5,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+
+  		<script
+ 		src="https://code.jquery.com/jquery-3.5.0.min.js" 
+		integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+ 		crossorigin="anonymous"></script>
+
 </head>
 
 <style>
@@ -24,11 +31,14 @@ width: 615px
 
 
 
-   table {
-        border: 1px solid #333333;
-      }
-     
- 
+            table          { border-collapse: collapse; }
+            table, th, td  { border: 1px solid; }
+            th, td         { padding: 4px; }
+            /* Additional style */
+            thead tr       { background-color: #cccccc; }
+            td.center      { text-align: center; }
+            td.right       { text-align: right; }
+         
 </style>
  <!--      width: 100%;-->
 
@@ -37,7 +47,7 @@ width: 615px
 
 <br>
 
-<table align="center">
+<table align="center" width="800" style="text-align:center">
 
 <tr style="background-color :skyblue">
 <td>일반게시판</td>
@@ -49,8 +59,8 @@ width: 615px
 
 <br>
 <br>
-
-
+ <!--  form role == 부트스트랩 -->
+ <form name="articleForm" method="post"  action="${contextPath}/board/write.do">
 <table align="center">
 					<colgroup>
 						<col style="width:12%;" /><col style="width:auto;" /><col style="width:12%;" /><col style="width:38%;" />
@@ -68,15 +78,15 @@ width: 615px
  						
 						<tr>
 							<td scope="row"  align="center">제목</td>
-							<td><input class="size" type="text" id="i_title" name="title" value="" disabled/></td>
+							<td><input class="size" type="text" id="i_title" name="title" value="${article.title}" /></td>
 						</tr>
 						<tr>
 						    <td scope="row"  width=30 align="center">작성자</td>
-							<td><input class="size" ype="text" id="i_title" name="title" value="" disabled/></td>						
+							<td><input class="size" ype="text" id="i_title" name="writer" value="${article.writer}" /></td>						
 						</tr>
 						<tr>
 							<td scope="row" width=30 align="center">내용</td>
-							<td colspan="3"><textarea id="i_content" name="content" cols="90" rows="10" disabled></textarea></td>
+							<td colspan="3"><textarea id="i_content" name="content" cols="90" rows="10" >${article.content}</textarea></td>
 						</tr>
 						
 						</tbody>
@@ -84,10 +94,33 @@ width: 615px
 						
 </table>
 
-<div align="center">
-		<a href="<c:url value='/board/write'/>">저장</a>
+<div style="position: absolute; left: 1000px;">
+<!-- <div align="center" style="right: 700px;"> -->
+		<input  type="submit" value="저장">
 		<a href="<c:url value='/board/write'/>">목록</a>
 </div>
+</form>
 
 </body>
+
+<script>
+
+
+//제이쿼리 시작
+$(function() {
+	
+	
+	$("#list-btn").click(function() {
+	
+		console.log("목록 버튼이 클릭됨");
+		location.href='/board/list?page=${p.page}' 
+				+ '&countPerPage=${p.countPerPage}';		
+		
+	});
+	
+});
+
+</script>
+
+
 </html>

@@ -14,6 +14,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+
+ 		<script
+ 		src="https://code.jquery.com/jquery-3.5.0.min.js" 
+		integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+ 		crossorigin="anonymous"></script>
 </head>
 
 <style>
@@ -34,6 +40,20 @@
         text-align: center;
 }
 
+
+ /* Basic table style */
+            table          { border-collapse: collapse; }
+            table, th, td  { border: 1px solid; }
+            th, td         { padding: 4px; }
+            /* Additional style */
+            thead tr       { background-color: #cccccc; }
+            td.center      { text-align: center; }
+            td.right       { text-align: right; }
+            tbody tr:nth-child(even)  { background-color: #D2E1FF; }
+            tbody tr:nth-child(odd)   { background-color: #E8F5FF; }
+
+
+
 </style>
 
 
@@ -50,7 +70,7 @@
 
 
 
-<table align="center">
+<table align="center" width="800" style="text-align:center">
 
 <tr style="background-color :skyblue">
 <td>일반게시판</td>
@@ -63,15 +83,17 @@
 <br>
 <br>
 
-
-<table align="center">
+<!--  테이블에다가 속성값을 주면 tr td는 자동으로 적용된다. -->
+<table align="center" width="800" style="text-align:center">
 <tr style="background-color :skyblue">
+
 <td>번호</td>
 <td>제목</td>
 <td>작성자</td>
 <td>조회수</td>
 <td>등록일자</td>
 </tr>
+</div>
 
 
 <c:forEach var="b" items="${articles}">
@@ -79,7 +101,7 @@
 
 <tr>
 <td>${b.boardNo}</td>
-<td>
+<td width="300">
 
 <a href="<c:url value='/board/content/${b.boardNo}${param.page == null ? pc.makeURI(1) : pc.makeURI(param.page)}' />">
 
@@ -87,7 +109,7 @@ ${b.title}
 </a>
 </td>
 <td>${b.writer}</td>
-<td>${b.viewCnt}</td>
+<td style="text-align:center">${b.viewCnt}</td>
 <td><fmt:formatDate value="${b.regDate}"
 pattern="yyyy-MM-dd"/></td>
 </tr>
@@ -111,7 +133,19 @@ pattern="yyyy-MM-dd"/></td>
 			
 </div>
 
+<script>
 
+const result = "${msg}";
+
+if(result === "regSuccess") {
+alert("게시글 등록이 완료 되었습니다.");
+} else if(result === "delSuccess") {
+	alert("게시글 삭제가 완료 되었습니다.");	
+}
+
+
+
+</script>
 
 
 

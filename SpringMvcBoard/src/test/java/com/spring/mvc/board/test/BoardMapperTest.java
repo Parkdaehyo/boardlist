@@ -27,7 +27,7 @@ public class BoardMapperTest {
 		
 	for (int i =1; i<=50; i++) {
 	BoardVO article = new BoardVO();
-	article.setTitle("3");
+	article.setTitle("테스트 글입니다.");
 	article.setWriter("Michael_Jackson");
 	article.setContent("22");
 	mapper.insert(article); //Autowired가 없으면 이게 안되는거같음.

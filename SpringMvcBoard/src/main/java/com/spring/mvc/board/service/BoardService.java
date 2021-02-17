@@ -51,7 +51,7 @@ public class BoardService implements IBoardService {
 
 	@Override
 	public void delete(Integer boardNo) {
-		// TODO Auto-generated method stub
+		mapper.delete(boardNo);
 		
 	}
 

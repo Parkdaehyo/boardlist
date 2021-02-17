@@ -55,7 +55,11 @@ FROM new_board1
 		WHERE board_no = #{boardNo}
 	</update>
 
+<delete id="delete">
+DELETE FROM new_board
+WHERE board_no = #{boardNo}
 
+</delete>
 
 
 
