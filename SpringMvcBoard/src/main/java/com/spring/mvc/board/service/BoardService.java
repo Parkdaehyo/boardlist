@@ -3,6 +3,7 @@ package com.spring.mvc.board.service;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 
 import org.springframework.stereotype.Service;
 
@@ -39,13 +40,16 @@ public class BoardService implements IBoardService {
 
 	@Override
 	public BoardVO getArticle(Integer boardNo) {
+	
+		
+		
 		mapper.updateViewCnt(boardNo);
 		return mapper.getArticle(boardNo);
 	}
 
 	@Override
 	public void update(BoardVO article) {
-		// TODO Auto-generated method stub
+		mapper.update(article);
 		
 	}
 
@@ -70,6 +74,14 @@ public class BoardService implements IBoardService {
 		
 		return mapper.countArticles(search);
 	}
+
+	@Override
+	public Integer viewCount(int boardNo) {
+		//
+		return mapper.viewCount(boardNo);
+	}
+	
+	
 	
 	
 	

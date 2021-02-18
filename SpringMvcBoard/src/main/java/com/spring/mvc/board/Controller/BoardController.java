@@ -3,6 +3,9 @@ package com.spring.mvc.board.Controller;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spring.mvc.board.model.BoardVO;
@@ -57,17 +61,43 @@ public class BoardController {
 	//url path 로 들어오는 값을 해석 그대로 변수로 사용하겠다는 의미이다.
 	@GetMapping("/content/{boardNo}") //20
 	public String content(@PathVariable Integer boardNo, HttpSession session, Model model
-			,@ModelAttribute("p") SearchVO paging) {
+			,@ModelAttribute("p") SearchVO paging, HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("URL: /board/content => GET"); 
 		System.out.println("parameter(글번호): " + boardNo); //20
+		
+		ModelAndView view = new ModelAndView();
+		
+		int limitTime = 60;
+		
+		System.out.println("쿠키 생성중");
+		
+		Cookie cookie = new Cookie("viewCookie" , "Hello_Cookie");// 쿠키생성: 이름: viewCookie, 값: Hello_Cookie
+		cookie.setPath("/"); //쿠키의 저장경로를 시작 URL로 설정?
+		cookie.setMaxAge(limitTime); //쿠키의 유효시간
+		
+		response.addCookie(cookie); //response 객체에 실려서 아용자의 웹브라우저로 저장된다.
+		
+
+		//service.kepp
+		
+		//////////////////////////////////////////////////////////////////////////////////
+		
+	
+		
 		BoardVO vo = service.getArticle(boardNo); 
-		System.out.println("Result Data: " + vo);
-		model.addAttribute("article" , vo); 
+	
+		model.addAttribute("article" , vo);
 		return "board/content";
-	}
+
+}			
+		//////////////////////////////////////////////////////////////////////////////	
+		
+		
+		
 	
 	
-	@GetMapping("/modify")
+	
+	@GetMapping("/modify") //여기까지 글번호가 어떻게 전달되는거지? -->input type hidden으로 boardNo가 보내졌다.
 	public String modify(Integer boardNo, Model model
 			, @ModelAttribute("p") PageVO paging) {
 
@@ -76,23 +106,43 @@ public class BoardController {
 		
 		BoardVO vo = service.getArticle(boardNo);
 		System.out.println("Result Data: " + vo);
-		model.addAttribute("article" , vo); 
+		model.addAttribute("article" , vo);
+		
+		int b = 2;
+		model.addAttribute("A", b);
+		
+		
 		
 		return "board/write";
 	}
 	
 	
+	@PostMapping("/modify")
+	public String modify(BoardVO article, RedirectAttributes ra) { //�뙆�씪誘명꽣媛믪쓣 �깭�슦�떎.
+		
+		System.out.println("parameter(board/): " + article);
+		service.update(article);
+		ra.addFlashAttribute("msg" , "modSuccess");
+		return "redirect:/board/content/" + article.getBoardNo();
+	}
 	
 	
 	@GetMapping("/write")
-	public void write() { //void로 처리하면 알아서 board/write.jsp가 열린다.
+	public void write(Model model) { //void로 처리하면 알아서 board/write.jsp가 열린다.
+		
+		int a = 1;
+		model.addAttribute("A", a);
+		
+		
+		
 		System.out.println("URL: /board/write 글쓰기 Get요청!");
 	}
 	
 	@PostMapping("/write") 
-	public String write(BoardVO article, RedirectAttributes ra) { 
+	public String write(@RequestParam("boardNo") int boardNo, BoardVO article, RedirectAttributes ra) { 
 		
-
+		System.out.println("전달된 boardNo" + boardNo);
+		
 		System.out.println("Controller parameter: " + article);
 	
 	

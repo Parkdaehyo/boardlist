@@ -34,13 +34,102 @@ width: 615px
 
 
 
-   		    table          { border-collapse: collapse; }
+   		
             table, th, td  { border: 1px solid; }
             th, td         { padding: 4px; }
             /* Additional style */
             thead tr       { background-color: #cccccc; }
             td.center      { text-align: center; }
             td.right       { text-align: right; }
+            
+            
+.button {
+
+  background-color: red;
+
+  border: none;
+
+  color: white;
+
+  padding: 5px 10px;
+
+  text-align: center;
+
+  text-decoration: none;
+
+  display: inline-block;
+
+  font-size: 12px;
+
+  margin: 4px 2px;
+
+  cursor: pointer;
+  
+  WIDTH: 50pt;
+
+}
+
+.update-button {
+
+  background-color: #1E96FF;
+
+  border: none;
+
+  color: white;
+
+  padding: 5px 10px;
+
+  text-align: center;
+
+  text-decoration: none;
+
+  display: inline-block;
+
+  font-size: 12px;
+
+  margin: 4px 2px;
+
+  cursor: pointer;
+  
+  WIDTH: 50pt;
+
+}
+
+.to-list {
+
+  background-color: #969696;
+
+  border: none;
+
+  color: white;
+
+  padding: 5px 10px;
+
+  text-align: center;
+
+  text-decoration: none;
+
+  display: inline-block;
+
+  font-size: 12px;
+
+  margin: 4px 2px;
+
+  cursor: pointer;
+  
+  WIDTH: 50pt;
+
+}
+
+
+
+.size2 {
+
+width: 150px
+
+}
+
+
  
 </style>
  <!--      width: 100%;-->
@@ -49,13 +138,13 @@ width: 615px
 
 <br>
 
-<table align="center" width="800" style="text-align:center">
+<table align="center" width="800" style="text-align:center; border-color: white;    border-style: dashed;">
 
-<tr style="background-color :skyblue">
-<td>일반게시판</td>
-<td>첨부파일 게시판</td>
-<td>다중 첨부파일게시판</td>
-<td>댓글 게시판</td>
+<tr style="background-color :#1E82FF">
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">일반게시판</a></td>
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">첨부파일 게시판</a></td>
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">댓글 게시판</a></td>
 </tr>
 </table>
 
@@ -79,11 +168,11 @@ width: 615px
  						
 						<tr>
 							<td scope="row"  align="center">제목</td>
-							<td><input class="size" type="text" id="i_title" name="title" value="${article.title}" readonly/></td>
+							<td><input style="border:none" class="size" type="text" id="i_title" name="title" value="${article.title}" readonly/></td>
 						</tr>
 						<tr>
 						    <td scope="row"  width=30 align="center">작성자</td>
-							<td><input class="size" ype="text" id="i_title" name="writer" value="${article.writer}" readonly/></td>						
+							<td><input style="border:none" class="size2" type="text" id="i_title" name="writer" value="${article.writer}" readonly/></td>						
 						</tr>
 						<tr>
 							<td scope="row" width=30 align="center">내용</td>
@@ -100,10 +189,10 @@ width: 615px
 
 
 
-<div style="position: absolute; left: 950px;">
-    <input id="modBtn" type="button" value="수정" class="btn" id="">
-    <input type="submit" value="삭제" id="" onclick="return confirm('정말로 삭제하시겠습니까?')">
-    <input type="button" value="목록" class="btn" id="list-btn">
+<div style="position: absolute; left: 1200px;">
+    <input id="modBtn" class="update-button" type="button" value="수정" class="btn" id="">
+    <input type="submit" class="button" value="삭제" id="" onclick="return confirm('정말로 삭제하시겠습니까?')">
+    <input type="button" class="to-list" value="목록" class="btn" id="list-btn">
 
 </div>
 

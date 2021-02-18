@@ -30,5 +30,11 @@ public interface IBoardService {
 			
 			//글 갯수
 			Integer countArticles(SearchVO search);
+			
+			Integer viewCount(int num);
+	
+			
+			
+			
 	
 }

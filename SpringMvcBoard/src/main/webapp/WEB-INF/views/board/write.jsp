@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%-- 포맷팅 관련 태그라이브러리(JSTL/fmt) --%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}"/>
+	
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,6 +21,20 @@
 
 <style>
 
+
+.save {
+
+background-color:red
+
+}
+
+.to-list {
+
+background-color:#969696
+
+}
+
+
 .grid {
      
         margin: 0 auto;
@@ -29,9 +48,17 @@ width: 615px
 
 }
 
+.size2 {
+
+width: 150px
+
+}
 
 
-            table          { border-collapse: collapse; }
+
+
+
+      
             table, th, td  { border: 1px solid; }
             th, td         { padding: 4px; }
             /* Additional style */
@@ -39,6 +66,70 @@ width: 615px
             td.center      { text-align: center; }
             td.right       { text-align: right; }
          
+
+
+
+
+.button {
+
+  background-color: red;
+
+  border: none;
+
+  color: white;
+
+  padding: 5px 10px;
+
+  text-align: center;
+
+  text-decoration: none;
+
+  display: inline-block;
+
+  font-size: 12px;
+
+  margin: 4px 2px;
+
+  cursor: pointer;
+  
+  WIDTH: 50pt;
+
+}
+
+
+.button2 {
+
+  background-color: #969696;
+  
+    border: none;
+
+  color: white;
+
+  padding: 5px 10px;
+
+  text-align: center;
+
+  text-decoration: none;
+
+  display: inline-block;
+
+  font-size: 12px;
+
+  margin: 4px 2px;
+
+  cursor: pointer;
+  
+  WIDTH: 50pt;
+  
+}
+
+
+
+
+
+
+
+
 </style>
  <!--      width: 100%;-->
 
@@ -47,20 +138,37 @@ width: 615px
 
 <br>
 
-<table align="center" width="800" style="text-align:center">
+<table align="center" width="800" style="text-align:center; border-color: white;">
 
-<tr style="background-color :skyblue">
-<td>일반게시판</td>
-<td>첨부파일 게시판</td>
-<td>다중 첨부파일게시판</td>
-<td>댓글 게시판</td>
+<tr style="background-color :#1E82FF">
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">일반게시판</a></td>
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">첨부파일 게시판</a></td>
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
+<td ><a href="<c:url value='/board/list/'/>" style="color:white;">댓글 게시판</a></td>
 </tr>
 </table>
 
 <br>
 <br>
+
+
+
+
+
+
+
+<!-- 
+
+여백 지정
+margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
+
+
+ -->
+
+
+
  <!--  form role == 부트스트랩 -->
- <form name="articleForm" method="post"  action="${contextPath}/board/write.do">
+ <form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write">
 <table align="center">
 					<colgroup>
 						<col style="width:12%;" /><col style="width:auto;" /><col style="width:12%;" /><col style="width:38%;" />
@@ -75,29 +183,40 @@ width: 615px
 						 	 	 	 	 	 	 
 						</c:forEach>
 						 --%>
+				
+ 						 <input id="boardno" type="hidden" name="boardNo" value="${article.boardNo}" />
+ 						 
+ 						 
+          				<input type="hidden" name="page" value="${p.page}">
+          				<input type="hidden" name="countPerPage" value="${p.countPerPage}">
+ 						
  						
 						<tr>
 							<td scope="row"  align="center">제목</td>
-							<td><input class="size" type="text" id="i_title" name="title" value="${article.title}" /></td>
+							<td><input class="size" type="text" id="title" name="title" value="${article.title}" /></td>
 						</tr>
 						<tr>
 						    <td scope="row"  width=30 align="center">작성자</td>
-							<td><input class="size" ype="text" id="i_title" name="writer" value="${article.writer}" /></td>						
+							<td><input class="size2" type="text" id="writer" name="writer" value="${article.writer}" /></td>						
 						</tr>
 						<tr>
 							<td scope="row" width=30 align="center">내용</td>
-							<td colspan="3"><textarea id="i_content" name="content" cols="90" rows="10" >${article.content}</textarea></td>
+							<td colspan="3"><textarea id="content" name="content" cols="90" rows="10" >${article.content}</textarea></td>
 						</tr>
 						
+	<input type="hidden" id="A" value="${A}">
 						</tbody>
 				
 						
 </table>
 
-<div style="position: absolute; left: 1000px;">
+						 
+
+<div style="position: absolute; left: 1280px;">
 <!-- <div align="center" style="right: 700px;"> -->
-		<input  type="submit" value="저장">
-		<a href="<c:url value='/board/write'/>">목록</a>
+		<button type="button" id="save" class="button" style="color:white;">저장</button>
+	<!-- 	<input id="save" class="save" style="color:white;" type="submit" value="저장"> -->
+		<input class="button2" type="button" value="목록" style="color:white;" id="list-btn2">
 </div>
 </form>
 
@@ -110,13 +229,97 @@ width: 615px
 $(function() {
 	
 	
-	$("#list-btn").click(function() {
+	$("#list-btn2").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
-		location.href='/board/list?page=${p.page}' 
-				+ '&countPerPage=${p.countPerPage}';		
+		location.href='/board/list';		
 		
 	});
+	
+	
+	$(document).ready(function() {
+		
+	$("#save").click(function() {
+	
+		var blank_pattern = /^\s+|\s+$/g;
+		
+		
+		var title = $("#title").val();
+		var content = $("#content").val();
+		var writer= $("#writer").val();
+		var A = $("#A").val();
+		
+		if(title.replace(blank_pattern, "") == "") {
+			
+			alert("제목을 입력해주시겠습니까?");
+			document.articleForm.title.focus();	
+			return;
+		}
+		
+		if(writer.replace(blank_pattern, "") == "") {
+			
+			alert("작성자를 입력해주시겠습니까?");
+			document.articleForm.writer.focus();	
+			return;
+		}	
+		
+		if(content.replace(blank_pattern, "") == "") {
+			
+			alert("내용을 입력해주시겠습니까?");
+			document.articleForm.content.focus();	
+			return;
+		}
+	
+			
+		if(A == 1) {
+			
+			
+			document.articleForm.action = "${contextPath}/board/write?boardNo=1"
+			document.articleForm.submit();
+			
+		} else {
+			
+			
+
+			const formElement = $("#formObj"); 
+			
+			formElement.attr("action" , "/board/modify");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+			formElement.attr("method", "post"); 
+			formElement.submit();
+			
+			
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+	
+	});
+		
+		
+		
+		
+		
+		
+		
+		
+		console.log("저장 버튼이 클릭됨");
+			
+		
+		
+		
+		
+	});
+	
+	
+	
+	
+	
+	
 	
 });
 
