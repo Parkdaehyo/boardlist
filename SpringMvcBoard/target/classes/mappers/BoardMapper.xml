@@ -56,10 +56,18 @@ FROM new_board1
 	</update>
 
 <delete id="delete">
-DELETE FROM new_board
+DELETE FROM new_board1
 WHERE board_no = #{boardNo}
 
 </delete>
+
+<update id="update">
+
+Update new_board1
+SET title = #{title},content=#{content}
+WHERE board_no = #{boardNo}
+
+</update>
 
 
 

@@ -31,6 +31,7 @@ public interface IBoardMapper {
 	
 	Integer countArticles(SearchVO search);
 	
+	Integer viewCount(int boardNo);
 	
 	
 }
