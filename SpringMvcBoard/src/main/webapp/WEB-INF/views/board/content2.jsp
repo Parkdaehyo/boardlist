@@ -17,6 +17,24 @@
 
 </head>
 
+
+<script>
+
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#preview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}  
+
+</script>
+
+
+
 <style>
 
 .grid {
@@ -26,11 +44,6 @@
         font-size: 0; /*양 옆쪽, 밑에 4px정도 여백을 없에주는 방법 하지만 크로스브라우징 호환성헤서는 문제가 있다.*/
 }
 
-.size {
-
-width: 615px
-
-}
 
 
 
@@ -133,6 +146,7 @@ width: 150px
  
 </style>
  <!--      width: 100%;-->
+ 
 
 <body>
 
@@ -150,11 +164,12 @@ width: 150px
 
 <br>
 <br>
-
-<table align="center">
-					<colgroup>
+	<%-- <colgroup>
 						<col style="width:12%;" /><col style="width:auto;" /><col style="width:12%;" /><col style="width:38%;" />
-					</colgroup>
+					</colgroup> --%>
+
+					<table align="center">
+				
 						<tbody>
 						
 				<%-- 	   <c:forEach var="image" items="${imageFileList}"> 
@@ -180,6 +195,46 @@ width: 150px
 							<td scope="row" width=30 align="center">내용</td>
 							<td colspan="3"><textarea id="i_content" name="content" cols="90" rows="10" readonly>${article.content}</textarea></td>
 						</tr>
+						
+						
+						 <c:choose> 
+						 
+	  <c:when test="${not empty article.imageFileName && article.imageFileName!='null' }">
+	   	<tr>
+		    <td width="150" align="center" bgcolor=""  rowspan="2">
+		      이미지
+		   </td>
+		   <td>
+		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
+		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" id="preview"  /><br>
+		   </td>   
+		  </tr>  
+		  <tr>
+		    
+		    <td>
+		       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
+		    </td>
+		  </tr> 
+		 </c:when>
+		 <c:otherwise>
+		    <tr  id="tr_file_upload" >
+				<!--     <td width="150" align="center" bgcolor="#FF9933"  rowspan="2">
+				      이미지
+				    </td> -->
+				    <td>
+				      <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
+				    </td>
+			  
+				    <td>
+				       <img id="preview"  /><br>
+				       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
+				    </td>
+				    
+			  </tr>
+		 </c:otherwise>
+	 </c:choose>
+						
+						
 						
 						
 						
@@ -218,7 +273,7 @@ $(function() {
 	$("#list-btn").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
-		location.href='/board/list?page=${p.page}' 
+		location.href='/board/list2?page=${p.page}' 
 				+ '&countPerPage=${p.countPerPage}';		
 		
 	});
@@ -229,7 +284,7 @@ $(function() {
 	var modifyBtn = $("#modBtn");
 	modifyBtn.click(function() { //클릭 했을때 생성되는 이벤트 처리
 		console.log("수정 버튼이 클릭됨!");
-		formElement.attr("action" , "/board/modify");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+		formElement.attr("action" , "/board/modify2");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 		formElement.attr("method", "get"); 
 		formElement.submit();
 	});

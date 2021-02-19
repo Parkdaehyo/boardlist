@@ -61,6 +61,7 @@ WHERE board_no = #{boardNo}
 
 </delete>
 
+<!--  작성자는 수정안되게 변경 -->
 <update id="update">
 
 Update new_board1

@@ -1,8 +1,10 @@
 package com.spring.mvc.board.model;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 
-public class BoardVO {
+public class BoardVO_two {
 
 	private Integer boardNo;
 	private String title;
@@ -10,6 +12,7 @@ public class BoardVO {
 	private String writer;
 	private Date regDate;
 	private Integer viewCnt;
+	private String imageFileName;
 	
 	public Integer getBoardNo() {
 		return boardNo;
@@ -18,7 +21,7 @@ public class BoardVO {
 		this.boardNo = boardNo;
 	}
 	public String getTitle() {
-		return title.replaceAll("(?i)<script", "&lt;script"); // &lt 꺽쇄 
+		return title.replaceAll("(?i)<script", "&lt;script");
 	}
 	public void setTitle(String title) {
 		this.title = title;
@@ -49,9 +52,20 @@ public class BoardVO {
 	}
 	
 	
-	
-	
-	
+
+	public String getImageFileName() {
+		return imageFileName;
+	}
+	public void setImageFileName(String imageFileName) {
+		try {
+			if(imageFileName!= null && imageFileName.length()!=0) {
+				this.imageFileName = URLEncoder.encode(imageFileName,"UTF-8");
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "BoardVO [boardNo=" + boardNo + ", title=" + title + ", content=" + content + ", writer=" + writer

@@ -110,12 +110,57 @@ border-color: red;
 <table align="center" width="800" style="text-align:center; border-color: white;">
 
 <tr style="background-color :#1E82FF">
-<td ><a href="<c:url value='/board/list/'/>" style="color:white;">일반게시판</a></td>
-<td ><a href="<c:url value='/board/list/'/>" style="color:white;">첨부파일 게시판</a></td>
-<td ><a href="<c:url value='/board/list/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
-<td ><a href="<c:url value='/board/list/'/>" style="color:white;">댓글 게시판</a></td>
+<td id="A"><a href="<c:url value='/board/list/'/>" style="color:white;">일반게시판</a></td>
+<td id="B"><a href="<c:url value='/board/list2/'/>" style="color:white;">첨부파일 게시판</a></td>
+<td id="C"><a href="<c:url value='/board/list/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
+<td id="D"><a href="<c:url value='/board/list/'/>" style="color:white;">댓글 게시판</a></td>
 </tr>
 </table>
 
 <br>
 <br>
+
+<script>
+
+
+$(function() {
+	
+	
+	$("#A").on("mouseenter", function() {
+		
+		$("#A").css({"background-color" : "yellow"});
+		
+	});
+	
+	$("#B").on("mouseenter", function() {
+		
+		$("#B").css({"background-color" : "yellow"});
+		
+		
+	});
+	
+	$("#C").on("mouseenter", function() {
+		
+		$("#C").css({"background-color" : "yellow"});
+		
+		
+	});
+	
+	$("#D").on("mouseenter", function() {
+		
+		$("#D").css({"background-color" : "yellow"});
+		
+		
+	});
+	
+	
+	
+});
+
+
+
+
+
+
+</script>
+

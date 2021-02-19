@@ -131,6 +131,22 @@ width: 150px
 
 
 </style>
+
+
+<script>
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+	      var reader = new FileReader();
+	      reader.onload = function (e) {
+	        $('#preview').attr('src', e.target.result);
+        }
+       reader.readAsDataURL(input.files[0]);
+    }
+}  
+
+
+</script>
  <!--      width: 100%;-->
 
 <body>
@@ -168,11 +184,14 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 
 
  <!--  form role == 부트스트랩 -->
- <form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write">
-<table align="center">
+ <form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write2" enctype="multipart/form-data">
+ 
+					<!--  위치를 자동으로 고정하고있음
 					<colgroup>
 						<col style="width:12%;" /><col style="width:auto;" /><col style="width:12%;" /><col style="width:38%;" />
 					</colgroup>
+						 -->
+					<table align="center">
 						<tbody>
 						
 				<%-- 	   <c:forEach var="image" items="${imageFileList}"> 
@@ -208,11 +227,29 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						<tr>
 							<td scope="row" width=30 align="center">내용</td>
 							<td colspan="3"><textarea id="content" name="content" cols="90" rows="10">${article.content}</textarea></td>
-						</tr>
 						
+						</tr>
+					<tr>
+					<td scope="row"> <input type="file" name="file" onchange="readURL(this);" /></td>
+						  <td><img  id="preview" src="#" width=200 /></td>
+					</tr>
+						
+				<!-- 		<tr>  tr은 줄개행을 의미
+							  <td scope="row"> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
+			                <td scope="row" width=30><img id="preview" src="#"  width=200 height=200/></td>
+							  </tr> -->
+							
+		
 							<input type="hidden" id="A" value="${A}">
 						</tbody>
 				
+				<!-- 
+					 <td> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
+							  </tr>
+							  <tr>
+			                <td><img  id="preview" src="#"/></td>
+				
+				 -->
 						
 </table>
 
@@ -281,7 +318,7 @@ $(function() {
 		if(A == 1) {
 			
 			
-			document.articleForm.action = "${contextPath}/board/write?boardNo=1"
+			document.articleForm.action = "${contextPath}/board/write2"
 			document.articleForm.submit();
 			
 		} else {
@@ -290,7 +327,7 @@ $(function() {
 
 			const formElement = $("#formObj"); 
 			
-			formElement.attr("action" , "/board/modify");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+			formElement.attr("action" , "/board/modify2");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 			formElement.attr("method", "post"); 
 			formElement.submit();
 			

@@ -9,7 +9,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.spring.mvc.board.model.BoardVO;
+import com.spring.mvc.board.model.BoardVO_two;
 import com.spring.mvc.board.repository.IBoardMapper;
+import com.spring.mvc.board.repository.second_IBoardMapper;
 
 
 //메이븐 업데이트를 해야 pom.xml에 있는 dependency들이 제대로 반영된다.
@@ -19,18 +21,19 @@ import com.spring.mvc.board.repository.IBoardMapper;
 public class BoardMapperTest {
 
 	@Autowired
-	private IBoardMapper mapper;
+	private second_IBoardMapper mapper;
 	
 	//게시글 등록 단위 테스트 //이게 단순한 테스트가 아니라 정말로 데이터베이스와 연결해서 작업을 수행하는 파일이다.
 	@Test
 	public void insertTest() {
 		
 	for (int i =1; i<=50; i++) {
-	BoardVO article = new BoardVO();
-	article.setTitle("테스트 글입니다.");
-	article.setWriter("김철수");
-	article.setContent("테스트 내용입니다");
-	mapper.insert(article); //Autowired가 없으면 이게 안되는거같음.
+	BoardVO_two article = new BoardVO_two();
+	article.setTitle("첨부파일 테스트 제목입니다.");
+	article.setWriter("첨부파일");
+	article.setContent("첨부파일 테스트 내용입니다");
+	article.setImageFileName(null);
+	//mapper.insert2(article); //Autowired가 없으면 이게 안되는거같음.
 	
 	}
 	System.out.println("게시물 등록 성공!");
@@ -54,8 +57,8 @@ public class BoardMapperTest {
 	@Test
 	public void getArticleTest() {
 		
-		BoardVO article = mapper.getArticle(44);
-		System.out.println(article);
+		//BoardVO article = mapper.getArticle(44);
+		//System.out.println(article);
 		
 	}
 	
@@ -67,21 +70,21 @@ public class BoardMapperTest {
 		article.setBoardNo(1);
 		article.setTitle("수정된 제목 이름!!");
 		article.setContent("수정 테스트중!!!");
-		mapper.update(article);
-		System.out.println("수정 후 정보: " + mapper.getArticle(1));
+		//mapper.update(article);
+		//System.out.println("수정 후 정보: " + mapper.getArticle(1));
 		
 	}
 	
 	//게시글 삭제 테스트
 	@Test
 	public void deleteTest() {
-		mapper.delete(3);
-		BoardVO vo = mapper.getArticle(3);
-		if(vo == null) {
+		//mapper.delete(3);
+		//BoardVO vo = mapper.getArticle(3);
+		//if(vo == null) {
 			System.out.println(" # 게시물이 없습니다!");
-		}else {
-			System.out.println(" # 게시물 정보: " + vo);
-		}
+		//}else {
+		//	System.out.println(" # 게시물 정보: " + vo);
+		//}
 	
 	}
 	/*

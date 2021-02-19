@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  namespace 경로명이 틀려서 안들어간 것이였다.. -->
+
+<mapper namespace="com.spring.mvc.board.repository.second_IBoardMapper"> 
+
+
+	<resultMap id="BoardMap" type="com.spring.mvc.board.model.BoardVO_two">
+		
+		<id property="boardNo" column="board_no"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="writer" column="writer"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="viewCnt" column="view_cnt"/>
+		<result property="imageFileName" column="imageFileName"/>
+
+	</resultMap>
+
+
+
+	
+  <select id="selectNewArticleNO" resultType="int">
+		<![CDATA[
+			SELECT  IFNULL(MAX(board_no), 0) + 1 from new_board2		
+		]]>
+	</select>
+	
+
+  <insert id="insertNewArticle"  parameterType="java.util.Map">
+		INSERT INTO new_board2 
+		  (title, content, writer, imageFileName)
+		VALUES (#{title}, #{content}, #{writer}, #{imageFileName})
+	</insert>
+
+<select id="getArticle2" resultMap="BoardMap">
+
+SELECT *
+FROM new_board2
+WHERE board_no =#{boardNo}
+
+</select>
+
+
+<select id="getArticleList2" resultMap="BoardMap">
+
+SELECT *
+FROM new_board2
+ORDER BY board_no DESC
+LIMIT #{pageStart},#{countPerPage}
+</select>
+
+
+<select id="countArticles2" resultType="int"> <!-- countArticles가 Integer 타입이라 resultType이 int이다. -->
+SELECT COUNT(*)
+FROM new_board2
+</select>
+
+<update id="updateViewCnt2">
+		UPDATE new_board2 
+		SET view_cnt = view_cnt + 1 
+		WHERE board_no = #{boardNo}
+	</update>
+
+<delete id="delete2">
+DELETE FROM new_board2
+WHERE board_no = #{boardNo}
+
+</delete>
+
+<!--  작성자는 수정안되게 변경 -->
+<update id="update2">
+
+Update new_board2
+SET title = #{title},content=#{content}
+WHERE board_no = #{boardNo}
+
+</update>
+
+
+
+</mapper>
