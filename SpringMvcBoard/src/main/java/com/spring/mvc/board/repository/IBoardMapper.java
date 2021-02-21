@@ -1,6 +1,9 @@
 package com.spring.mvc.board.repository;
 
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.dao.DataAccessException;
 
 import com.spring.mvc.board.model.BoardVO;
 import com.spring.mvc.commons.SearchVO;
@@ -23,7 +26,7 @@ public interface IBoardMapper {
 
 	//게시글 삭제 기능
 	void delete(Integer boardNo);
-
+	
 
 	//# 검색, 페이지 기능이 포함된 게시글 목록 조회기능
 	List<BoardVO> getArticleList(SearchVO search);

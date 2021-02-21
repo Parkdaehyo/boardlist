@@ -34,6 +34,27 @@
 		  (title, content, writer, imageFileName)
 		VALUES (#{title}, #{content}, #{writer}, #{imageFileName})
 	</insert>
+	
+
+	<update id="updateArticle" parameterType="java.util.Map">
+	update new_board2
+	set title=#{title},
+	content =#{content},
+	<if test="imageFileName != '' and imageFileName != null">
+	imageFileName =#{imageFileName}
+	</if>
+	where board_no=#{boardNo}
+	</update>
+	
+	
+	<update id="update2" parameterType="java.util.Map">
+	update new_board2
+	set title=#{title},
+	content =#{content}
+	where board_no=#{boardNo}
+	</update>
+	
+	
 
 <select id="getArticle2" resultMap="BoardMap">
 
@@ -70,14 +91,6 @@ WHERE board_no = #{boardNo}
 
 </delete>
 
-<!--  작성자는 수정안되게 변경 -->
-<update id="update2">
-
-Update new_board2
-SET title = #{title},content=#{content}
-WHERE board_no = #{boardNo}
-
-</update>
 
 
 

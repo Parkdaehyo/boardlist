@@ -9,25 +9,14 @@
 	
 	
 
-	
-		<!-- 히카리 커넥션풀 빈 등록 -->
+	<!-- 히카리 커넥션풀 빈 등록 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 	
 		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://tecc.anyro.com:3306/ein_test?serverTimezone=Asia/Seoul&amp;allowMultiQueries=true&amp;characterEncoding=UTF-8" />
-		<property name="username" value="ein_test" />
-		<property name="password" value="#db_ein_test#" />	
-	
-	</bean>
-	
-	
-			<!--  allowMultiQueries=true -->
-	<!-- 	<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
 		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/spring?serverTimezone=Asia/Seoul&amp;allowMultiQueries=true" />
 		<property name="username" value="root" />
 		<property name="password" value="1234" />
-		 -->
-	
+	</bean>
 	
 	<!-- 	데이터 소스 객체 빈 등록 -->
 	<bean id="ds" class="com.zaxxer.hikari.HikariDataSource">

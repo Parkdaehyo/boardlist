@@ -247,15 +247,28 @@ public class BoardService implements IBoardService {
 		
 	}
 
+	//첨부파일 게시판 수정
 	@Override
-	public void update2(BoardVO_two article) {
-		// TODO Auto-generated method stub
+	public void updateArticle(Map articleMap) throws Exception{
+		
+		System.out.println("서비스 articleMap" + articleMap);
+		mapper2.updateArticle(articleMap);
+	
 		
 	}
+	public void update2(Map articleMap) throws Exception{
+		
+		System.out.println("서비스 articleMap" + articleMap);
+		mapper2.update2(articleMap);
+	
+		
+	}
+	
+	
 
 	@Override
 	public void delete2(Integer boardNo) {
-		// TODO Auto-generated method stub
+		mapper2.delete2(boardNo);
 		
 	}
 

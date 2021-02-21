@@ -21,13 +21,16 @@ public interface second_IBoardMapper {
 	//게시물 조회수 상승처리
 	void updateViewCnt2(Integer boardNo);
 	
-	//게시글 수정기능
-	void update2(BoardVO_two article);
+	
 
 	//게시글 삭제 기능
 	void delete2(Integer boardNo);
 
-
+	//게시글,첨부파일 수정
+	public void updateArticle(Map articleMap) throws DataAccessException;
+	
+	public void update2(Map articleMap) throws DataAccessException;
+	
 	//# 검색, 페이지 기능이 포함된 게시글 목록 조회기능
 	List<BoardVO_two> getArticleList2(SearchVO search);
 	

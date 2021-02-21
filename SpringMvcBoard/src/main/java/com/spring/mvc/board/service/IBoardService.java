@@ -50,8 +50,10 @@ public interface IBoardService {
 			//게시글 단일 조회기능
 			BoardVO_two getArticle2(Integer boardNo, HttpServletRequest request,HttpServletResponse response); //Integer == int
 			
-			//게시글 수정기능
-			void update2(BoardVO_two article);
+			// 글 + 첨부파일 수정 기능
+			void updateArticle(Map articleMap) throws Exception;
+			
+			void update2(Map articleMap) throws Exception;
 					
 			//게시글 삭제 기능
 			void delete2(Integer boardNo);

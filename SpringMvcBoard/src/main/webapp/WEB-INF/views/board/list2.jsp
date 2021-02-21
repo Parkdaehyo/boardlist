@@ -18,6 +18,7 @@
 
 <td style="color:white;">번호</td>
 <td style="color:white;">제목</td>
+<td style="color:white;">첨부파일</td>
 <td style="color:white;">작성자</td>
 <td style="color:white;">조회수</td>
 <td style="color:white;">등록일자</td>
@@ -36,6 +37,11 @@
 
 ${b.title}
 </a>
+<td>
+<c:if test="${not empty b.imageFileName}">
+Y
+</c:if>
+</td>
 </td>
 <td>${b.writer}</td>
 <td style="text-align:center">${b.viewCnt}</td>

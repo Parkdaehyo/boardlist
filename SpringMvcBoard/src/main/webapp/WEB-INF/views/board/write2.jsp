@@ -135,6 +135,7 @@ width: 150px
 
 <script>
 
+<!-- 파일을 보이게 할 수 있도록 읽어주는 함수 -->
 function readURL(input) {
     if (input.files && input.files[0]) {
 	      var reader = new FileReader();
@@ -202,7 +203,16 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						 	 	 	 	 	 	 
 						</c:forEach>
 						 --%>
-				
+							
+						<!--  이 페이지는 
+						
+						저장과 수정이 같은 한 화면이기 때문에
+						write2.jsp로 진입할시에 value의 aritlce 값들은
+						전혀 표시가 안된다.
+						 -->
+								
+							
+					
  						 <input id="boardno" type="hidden" name="boardNo" value="${article.boardNo}" />
  						 
  						 
@@ -230,17 +240,70 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						
 						</tr>
 					<tr>
-					<td scope="row"> <input type="file" name="file" onchange="readURL(this);" /></td>
+					
+					
+					
+						 <c:choose> 
+						 
+						 
+				 
+	  <c:when test="${not empty article.imageFileName && article.imageFileName!='null'}">
+	  	<c:if test="${A == 2}">	
+	   	<tr>
+		    <td width="150" align="center" bgcolor=""  rowspan="2">
+		      이미지
+		   </td>
+		   <td>
+		     <input  type="hidden"  name="file" id="i_imageFileName" value="${article.imageFileName }"   />
+		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
+		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" width=200 id="preview"  /><br>
+		   </td>   
+		  </tr>  
+		 		<!--  이 코드는 파일선택이다. 파일 선택을 누르게 할 수있다. -->
+		    	<td scope="row"> 
+		    						<!--  이걸 imageFileName으로 바꿨다고 오류가 난다고?? -->
+		    	<input type="file" name="file" onchange="readURL(this);" /></td>
+		</td>
+		    	
+		    	<tr>
+		    	<!--  preview가 업로드시에 파일이 브라우저에 나타나게하는 역할 근데 id prieview가 위에 있으니 이것은 필요 없다.-->
+	<!-- 	    	  <td><img  id="preview" src="#" width=200 /></td>  -->
+			</tr>
+		    <!-- <td>
+		       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
+		    </td> -->
+		
+		 </c:if>
+		 </c:when>
+	  </c:choose>
+					<!--  empty(null), ! empty(not null) -->
+					
+					
+					<c:if test="${A == 1 || article.imageFileName == null}"> 
+					
+					<!--  파일 선택  write2.jsp-->
+					<td scope="row"> <input id="write2" type="file" name="file" onchange="readURL(this);" /></td>
+						
 						  <td><img  id="preview" src="#" width=200 /></td>
 					</tr>
+					</c:if>
+				
+					
+					
 						
 				<!-- 		<tr>  tr은 줄개행을 의미
 							  <td scope="row"> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
 			                <td scope="row" width=30><img id="preview" src="#"  width=200 height=200/></td>
 							  </tr> -->
+							  
+							
+						
+		
+							  
+							  
 							
 		
-							<input type="hidden" id="A" value="${A}">
+							<input type="hidden" id="A" value="${A}" />
 						</tbody>
 				
 				<!-- 
@@ -270,6 +333,10 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 
 //제이쿼리 시작
 $(function() {
+	
+
+	
+	
 	
 	
 	$("#list-btn2").click(function() {

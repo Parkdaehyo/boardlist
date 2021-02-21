@@ -162,8 +162,7 @@ width: 150px
 </tr>
 </table>
 
-<br>
-<br>
+
 	<%-- <colgroup>
 						<col style="width:12%;" /><col style="width:auto;" /><col style="width:12%;" /><col style="width:38%;" />
 					</colgroup> --%>
@@ -192,7 +191,8 @@ width: 150px
 							<%-- <td><input style="border:none" class="size2" type="text" id="i_title" name="writer" value="${article.writer}" readonly/></td>	 --%>					
 						</tr>
 						<tr>
-							<td scope="row" width=30 align="center">내용</td>
+							<td scope="row" width=30 align
+							="center">내용</td>
 							<td colspan="3"><textarea id="i_content" name="content" cols="90" rows="10" readonly>${article.content}</textarea></td>
 						</tr>
 						
@@ -211,9 +211,10 @@ width: 150px
 		  </tr>  
 		  <tr>
 		    
-		    <td>
+		  <!--   <td>
 		       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
-		    </td>
+		    </td> -->
+		    
 		  </tr> 
 		 </c:when>
 		 <c:otherwise>
@@ -234,17 +235,20 @@ width: 150px
 		 </c:otherwise>
 	 </c:choose>
 						
-						
-						
-						
+			
+			
 						
 						</tbody>
 </table>
- <form id="formObj" action="<c:url value='/board/delete'/>" method="post">  
+
+
+
+ <form id="formObj" action="<c:url value='/board/delete2'/>" method="post">  
 
    		  <input type="hidden" name="boardNo" value="${article.boardNo}">
           <input type="hidden" name="page" value="${p.page}">
           <input type="hidden" name="countPerPage" value="${p.countPerPage}">
+          <input type="hidden" name="imageFileName" value="${article.imageFileName}">
 
 
 
@@ -257,14 +261,22 @@ width: 150px
 
 </form>
 
+<!--  컨트롤러의 패키지의 위치는 상관없이 매핑명이 download.do이므로 다운로드가 가능합니다. 패키지의 위치는 상관없습니다 -->
 
+<div style="position: absolute; left: 300px;">
+<form method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}">
+
+
+<input type="submit" value="이미지 다운로드" />		
+</form>
+</div>
 </body>
 
 <script>
 
 
-
-
+<%-- 		<input type="hidden" name="imageFileName" value="${article.imageFileName}" /> <br> --%>
+<%-- <input type="hidden" name="boardNo" value="${article.boardNo}" /> <br> --%>
 
 //제이쿼리 시작
 $(function() {
