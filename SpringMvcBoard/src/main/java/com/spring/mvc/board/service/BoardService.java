@@ -1,5 +1,6 @@
 package com.spring.mvc.board.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.spring.mvc.board.model.BoardVO;
+import com.spring.mvc.board.model.BoardVO_third;
 import com.spring.mvc.board.model.BoardVO_two;
+import com.spring.mvc.board.model.ImageVO;
 import com.spring.mvc.board.repository.IBoardMapper;
 import com.spring.mvc.board.repository.second_IBoardMapper;
+import com.spring.mvc.board.repository.third_IBoardMapper;
 import com.spring.mvc.commons.SearchVO;
 
 @Service
@@ -26,6 +30,9 @@ public class BoardService implements IBoardService {
 	
 	@Inject
 	private second_IBoardMapper mapper2;
+	
+	@Inject
+	private third_IBoardMapper mapper3;
 
 	@Override
 	public void insert(BoardVO article) {
@@ -175,7 +182,7 @@ public class BoardService implements IBoardService {
 	public int addNewArticle(Map articleMap) throws Exception{
 		
 		int articleNO = selectNewArticleNO();
-		articleMap.put("articleNO", articleNO);
+		articleMap.put("articleNO", articleNO); 
 		
 		mapper2.insertNewArticle(articleMap);
 		
@@ -240,13 +247,12 @@ public class BoardService implements IBoardService {
 	    		
 	        }
 		
-		
-		
-		
-		
-		
 	}
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	//첨부파일 게시판 수정
 	@Override
 	public void updateArticle(Map articleMap) throws Exception{
@@ -291,6 +297,181 @@ public class BoardService implements IBoardService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//다중 첨부파일
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	@Override
+	public int insertNewArticle3(Map articleMap) throws DataAccessException {
+		
+		int boardNo = mapper3.insertNewArticle3(articleMap);
+		articleMap.put("boardNO" , boardNo);
+		mapper3.insertNewArticle3(articleMap);
+		return boardNo;
+	}
+
+	
+	@Override
+	public BoardVO_third getArticle3(Integer boardNo, HttpServletRequest request, HttpServletResponse response) {
+		
+		
+		   Cookie[] cookies = request.getCookies(); //모든 ㅋ
+	        
+	        // 비교하기 위해 새로운 쿠키
+	        Cookie viewCookie = null;
+	      
+	        // 쿠키가 있을 경우 
+	        if (cookies != null && cookies.length > 0) 
+	        {
+	            for (int i = 0; i < cookies.length; i++)
+	            {
+	                // Cookie의 name이 cookie + reviewNo와 일치하는 쿠키를 viewCookie에 넣어줌 
+	                if (cookies[i].getName().equals("cookie"+boardNo))
+	                { 
+	                    //System.out.println("처음 쿠키가 생성한 뒤 들어옴.");
+	                    int limitTime = 300;
+	                   viewCookie = cookies[i];
+	                   viewCookie.setMaxAge(limitTime);
+	                }
+	            }
+	        }
+	        
+	        //처음에는 무조건 여기로 떨어지겠지?
+	        if (viewCookie == null) {  //쿠키가없어야만 조회수 증가로직 처리
+             System.out.println("cookie 없음");
+             
+           
+             // 쿠키 생성(이름, 값)
+             Cookie newCookie = new Cookie("cookie"+boardNo, "|" + boardNo + "|");
+             newCookie.setMaxAge(300);
+                             
+             // 쿠키 추가
+             response.addCookie(newCookie); 
+             
+     		mapper3.updateViewCnt3(boardNo);
+     		return mapper3.getArticle3(boardNo);
+     		
+	        } else { //viewCookie가 있다면 여기로 빠지는데
+	        	
+	        	if (viewCookie.getMaxAge() < 1) {
+	        	
+	        	mapper3.updateViewCnt3(boardNo);
+	        	
+	        	}
+	        	
+	        	return mapper3.getArticle3(boardNo);
+	    		
+	        }
+		
+	}
+	
+	
+	
+
+	@Override
+	public void updateViewCnt3(Integer boardNo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete3(Integer boardNo) {
+		mapper3.delete3(boardNo);
+		
+	}
+
+	@Override
+	public void updateArticle3(Map articleMap) throws DataAccessException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update3(Map articleMap) throws DataAccessException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<BoardVO_third> getArticleList3(SearchVO search) {
+			
+			List<BoardVO_third> list = mapper3.getArticleList3(search);
+		
+		return list;
+	}
+
+	@Override
+	public Integer countArticles3(SearchVO search) {
+	
+		return mapper3.countArticles3(search);
+	}
+
+	@Override
+	public Integer viewCount3(int boardNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer selectNewArticleNO3() {
+		// TODO Auto-generated method stub
+		return mapper3.selectNewArticleNO3();
+	}
+
+	@Override //insertNewAritlce로직을 다실행해야한다.
+	public int addNewArticle3(Map articleMap) throws Exception{
+		
+		
+		int boardNo = mapper3.selectNewArticleNO3();
+		
+		System.out.println("boardNo값은 뭔데?" + boardNo);
+		
+		articleMap.put("boardNo" , boardNo); 
+		
+		//왜 1이 리턴되는거지?
+		int insertNewArticle3_boardNo = mapper3.insertNewArticle3(articleMap); //boardNo가 계속 1만 셋팅되고 있는상황
+		
+		List<ImageVO> imageFileList = (ArrayList)articleMap.get("imageFileList");
+		
+		System.out.println("boarservice3의 articleMap" + articleMap);
+		
+		System.out.println("insertNewArticle3_boardNo" + insertNewArticle3_boardNo + "번");
+		
+		
+		
+		int board_no = (Integer)articleMap.get("boardNo");
+		
+		
+		int imageFileNO = selectNewImageFileNO3(); //MAX값 가져오는것.
+		
+		for(ImageVO imageVO : imageFileList){
+			imageVO.setImageFileNO(++imageFileNO);
+			imageVO.setBoardNo(board_no); 
+			System.out.println("파일 이름:" + imageVO.getImageFileName());
+		}
+				
+		return mapper3.insertNewImage3(articleMap);
+		
+
+		
+	}
+
+	@Override
+	public int selectNewImageFileNO3() throws DataAccessException {
+	
+		return mapper3.selectNewImageFileNO3();
+	}
+
+	@Override
+	public List selectImageFileList(int articleNO) throws DataAccessException {
+		// TODO Auto-generated method stub
+		return mapper3.selectImageFileList(articleNO);
+	}
+	
+	
+	
 	
 	
 	

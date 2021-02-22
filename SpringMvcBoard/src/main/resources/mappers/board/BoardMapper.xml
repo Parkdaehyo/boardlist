@@ -16,15 +16,11 @@
 
 	</resultMap>
 
-
-
 	<insert id="insert">
 		INSERT INTO new_board1 
 		  (title, content, writer)
 		VALUES (#{title}, #{content}, #{writer})
 	</insert>
-
-
 
 <select id="getArticle" resultMap="BoardMap">
 

@@ -112,7 +112,7 @@ border-color: red;
 <tr style="background-color :#1E82FF">
 <td id="A"><a href="<c:url value='/board/list/'/>" style="color:white;">일반게시판</a></td>
 <td id="B"><a href="<c:url value='/board/list2/'/>" style="color:white;">첨부파일 게시판</a></td>
-<td id="C"><a href="<c:url value='/board/list/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
+<td id="C"><a href="<c:url value='/board/list3/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
 <td id="D"><a href="<c:url value='/board/list/'/>" style="color:white;">댓글 게시판</a></td>
 </tr>
 </table>

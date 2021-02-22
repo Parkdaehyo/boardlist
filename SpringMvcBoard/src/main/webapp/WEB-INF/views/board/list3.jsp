@@ -32,8 +32,8 @@
 <tr>
 <td>${b.boardNo}</td>
 <td width="300" style="text-align:left">
-
-<a href="<c:url value='/board/content2/${b.boardNo}${param.page == null ? pc.makeURI(1) : pc.makeURI(param.page)}' />">
+												<!--  후에 pc.makeURI에 대해서 상세히 알아볼것. -->
+<a href="<c:url value='/board/content3/${b.boardNo}${param.page == null ? pc.makeURI(1) : pc.makeURI(param.page)}' />">
 
 ${b.title}
 </a>
@@ -60,7 +60,7 @@ pattern="yyyy-MM-dd"/></td>
 
 
 		<c:if test="${pc.prev}"> <!--  이전버튼이 true일때만 등장. -->
-					<a href="<c:url value='/board/list2${pc.makeURI(pc.beginPage - 1)}'/>" 
+					<a href="<c:url value='/board/list3${pc.makeURI(pc.beginPage - 1)}'/>" 
 						>이전</a>
 					
 					</c:if>
@@ -69,17 +69,17 @@ pattern="yyyy-MM-dd"/></td>
 		<c:forEach var="pageNum" begin="${pc.beginPage}" end="${pc.endPage}">
 						<!-- 1이 시작값 end가 끝값 -->
 						<li class="grid_item"><a
-							href="<c:url value='/board/list2${pc.makeURI(pageNum)}'/>"
+							href="<c:url value='/board/list3${pc.makeURI(pageNum)}'/>"
 							class="${(pc.paging.page == pageNum) ? 'page-active' : ''}" 
 							>${pageNum}</a>
 						</li>
 					</c:forEach>
 					<c:if test="${pc.next}"> <!-- 이것도, next가 true일때만 등장. -->
-					<a href="<c:url value='/board/list2${pc.makeURI(pc.endPage + 1)}'/>"
+					<a href="<c:url value='/board/list3${pc.makeURI(pc.endPage + 1)}'/>"
 						>다음</a>
 				
 					</c:if>	
-				<a href="<c:url value='/board/write2?page=${p.page}'/>">등록</a> <!--  p태그를 하면 줄개행이 된다. -->
+				<a href="<c:url value='/board/write3?page=${p.page}&boardNo=${b.boardNo}'/>">등록</a> <!--  p태그를 하면 줄개행이 된다. -->
 			
 	
 		<!--  다음 버튼 -->

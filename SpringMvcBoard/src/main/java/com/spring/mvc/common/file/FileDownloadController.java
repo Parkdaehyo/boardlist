@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
-public class FileDownloadController {
-	private static final String ARTICLE_IMAGE_REPO = "C:\\board\\article_image";
+public class FileDownloadController {				//"C:+File.separator+board+File.separator+article_image";
+	private static final String ARTICLE_IMAGE_REPO ="C:+File.separator+board+File.separator+article_image";
 	@RequestMapping("/download.do")
 	protected void download(@RequestParam("imageFileName") String imageFileName, //이미지 파일 이름을 바로 설정한다.
 							@RequestParam("boardNo") String boardNo,
@@ -34,7 +34,7 @@ public class FileDownloadController {
 		 */
 	
 		//이 경로를 읽어야만 이미지 파일이 출력된다.				
-		String downFile = ARTICLE_IMAGE_REPO + "\\" +boardNo+"\\"+ imageFileName; 	//글 번호와 파일 이름으로 다운로드 할 파일 경로를 설정한다.
+		String downFile = ARTICLE_IMAGE_REPO + File.separator +boardNo+ File.separator+ imageFileName; 	//글 번호와 파일 이름으로 다운로드 할 파일 경로를 설정한다.
 		File file = new File(downFile); //다운로드 할 파일 객체를 생성한다.
 
 		response.setHeader("Cache-Control", "no-cache");

@@ -31,6 +31,20 @@ function readURL(input) {
     }
 }  
 
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+       	 
+       	 var count = 0;
+       	 $('#i_imageFileName'+count).attr('src', e.target.result);
+       	 //$('#preview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}  
+
 </script>
 
 
@@ -196,45 +210,36 @@ width: 150px
 							<td colspan="3"><textarea id="i_content" name="content" cols="90" rows="10" readonly>${article.content}</textarea></td>
 						</tr>
 						
-						
-						 <c:choose> 
-						 
-	  <c:when test="${not empty article.imageFileName && article.imageFileName!='null' }">
-	   	<tr>
-		    <td width="150" align="center" bgcolor=""  rowspan="2">
-		      이미지
-		   </td>
-		   <td>
-		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
-		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" id="preview" width="200"/><br>
-		   </td>   
-		  </tr>  
-		  <tr>
-		    
-		  <!--   <td>
-		       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
-		    </td> -->
-		    
-		  </tr> 
-		 </c:when>
-		 <c:otherwise>
-		    <tr  id="tr_file_upload" >
-				<!--     <td width="150" align="center" bgcolor="#FF9933"  rowspan="2">
-				      이미지
-				    </td> -->
-				    <td>
-				      <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
-				    </td>
-			  
-				    <td>
-				       <img id="preview"  /><br>
-				       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
-				    </td>
-				    
-			  </tr>
-		 </c:otherwise>
-	 </c:choose>
-						
+		 <c:if test="${not empty imageFileList && imageFileList!='null' }">
+                 <!-- 밖에다 써야함. -->
+			   <c:set var="count" value="0"/>
+	 		 <c:forEach var="item" items="${imageFileList}" varStatus="status" >
+		    <tr>
+			    <td width="150" align="center" rowspan="2">
+			          이미지${status.count }
+			   </td>
+			   <td>
+			     <input  type= "hidden" name="originalFileName" value="${item.imageFileName }" />	
+			     <!-- 추가 --> 
+			     <c:set var="aa" value="preview${count }"/>
+			   <!--   <c:out value="${aa}" /> -->	
+			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
+			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" /><br>
+			<%--     	    <img src="${contextPath}/download.do?articleNO=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
+			   </td>   
+			  </tr>  
+			  <tr>
+			    <td>  
+			    <!--  인자로  img 태그 id값도 보낸다. --> <!-- 여기선 imageFileName이 board_type의 역할을 한다. -->
+			       <input  class="selectimage" type="file"  name="imageFileName" id="i_imageFileName" disabled   onchange="readURL(this, '${aa}');"   />
+			    </td>
+			 </tr>
+			 <!--  추가 -->
+			 <c:set var="count" value="${count +1 }" />
+			 <c:out value="${count }" />
+		</c:forEach>
+ </c:if>
+
 			
 			
 						
@@ -243,7 +248,7 @@ width: 150px
 
 
 
- <form id="formObj" action="<c:url value='/board/delete2'/>" method="post">  
+ <form id="formObj" action="<c:url value='/board/delete3'/>" method="post">  
 
    		  <input type="hidden" name="boardNo" value="${article.boardNo}">
           <input type="hidden" name="page" value="${p.page}">
@@ -287,7 +292,7 @@ $(function() {
 	$("#list-btn").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
-		location.href='/board/list2?page=${p.page}' 
+		location.href='/board/list3?page=${p.page}' 
 				+ '&countPerPage=${p.countPerPage}';		
 		
 	});
@@ -298,7 +303,7 @@ $(function() {
 	var modifyBtn = $("#modBtn");
 	modifyBtn.click(function() { //클릭 했을때 생성되는 이벤트 처리
 		console.log("수정 버튼이 클릭됨!");
-		formElement.attr("action" , "/board/modify2");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+		formElement.attr("action" , "/board/modify3");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 		formElement.attr("method", "get"); 
 		formElement.submit();
 	});
