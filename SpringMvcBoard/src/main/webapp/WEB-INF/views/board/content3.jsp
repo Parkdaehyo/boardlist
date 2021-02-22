@@ -243,7 +243,7 @@ width: 150px
 
 
 
- <form id="formObj" action="<c:url value='/board/delete2'/>" method="post">  
+ <form id="formObj" action="<c:url value='/board/delete3'/>" method="post">  
 
    		  <input type="hidden" name="boardNo" value="${article.boardNo}">
           <input type="hidden" name="page" value="${p.page}">
@@ -287,7 +287,7 @@ $(function() {
 	$("#list-btn").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
-		location.href='/board/list2?page=${p.page}' 
+		location.href='/board/list3?page=${p.page}' 
 				+ '&countPerPage=${p.countPerPage}';		
 		
 	});
@@ -298,7 +298,7 @@ $(function() {
 	var modifyBtn = $("#modBtn");
 	modifyBtn.click(function() { //클릭 했을때 생성되는 이벤트 처리
 		console.log("수정 버튼이 클릭됨!");
-		formElement.attr("action" , "/board/modify2");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+		formElement.attr("action" , "/board/modify3");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 		formElement.attr("method", "get"); 
 		formElement.submit();
 	});

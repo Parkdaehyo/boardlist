@@ -146,6 +146,11 @@ function readURL(input) {
     }
 }  
 
+var cnt=1;
+function fn_addFile(){
+	  $("#d_file").append("<br>"+"<input type='file' name='file"+cnt+"' />");
+	  cnt++;
+}  
 
 </script>
  <!--      width: 100%;-->
@@ -159,9 +164,9 @@ function readURL(input) {
 
 <tr style="background-color :#1E82FF">
 <td ><a href="<c:url value='/board/list/'/>" style="color:white;">일반게시판</a></td>
-<td ><a href="<c:url value='/board/list/'/>" style="color:white;">첨부파일 게시판</a></td>
-<td ><a href="<c:url value='/board/list/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
-<td ><a href="<c:url value='/board/list/'/>" style="color:white;">댓글 게시판</a></td>
+<td ><a href="<c:url value='/board/list2/'/>" style="color:white;">첨부파일 게시판</a></td>
+<td ><a href="<c:url value='/board/list3/'/>" style="color:white;">다중 첨부파일 게시판</a></td>
+<td ><a href="<c:url value='/board/list4/'/>" style="color:white;">댓글 게시판</a></td>
 </tr>
 </table>
 
@@ -184,8 +189,8 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 
 
 
- <!--  form role == 부트스트랩 -->
- <form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write2" enctype="multipart/form-data">
+ 					<!--  form role == 부트스트랩 -->
+ 					<form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write3" enctype="multipart/form-data">
  
 					<!--  위치를 자동으로 고정하고있음
 					<colgroup>
@@ -226,8 +231,9 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
           				<input type="hidden" name="countPerPage" value="${p.countPerPage}">
  						
  						
+ 						<!--  왜 제목에 width를 설정했는데 다 바뀌는거지? -->
 						<tr>
-							<td scope="row"  align="center">제목</td>
+							<td width="100"  scope="row"  align="center">제목</td>
 							<td><input class="size" type="text" id="title" name="title" value="${article.title}" /></td>
 						</tr>
 						<tr>
@@ -239,12 +245,8 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 							<td colspan="3" id=""><textarea id="content" name="content" cols="90" rows="10">${article.content}</textarea></td>
 						
 						</tr>
-					<tr>
-					
-					
 					
 						 <c:choose> 
-						 
 						 
 				 
 	  <c:when test="${not empty article.imageFileName && article.imageFileName!='null'}">
@@ -254,15 +256,16 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 		      이미지
 		   </td>
 		   <td>
-		     <input  type="hidden"  name="file" id="i_imageFileName" value="${article.imageFileName }"   />
-		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
-		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" width=200 id="preview"  /><br>
+		     <input  type="hidden"  name="file" id="i_imageFileName" value="${article.imageFileName}"   />
+		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName}" />
+		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName1}" width=200 id="preview"  /><br>
 		   </td>   
 		  </tr>  
 		 		<!--  이 코드는 파일선택이다. 파일 선택을 누르게 할 수있다. -->
 		    	<td scope="row"> 
 		    						<!--  이걸 imageFileName으로 바꿨다고 오류가 난다고?? -->
 		    	<input type="file" name="file" onchange="readURL(this);" /></td>
+		    	
 		</td>
 		    	
 		    	<tr>
@@ -278,33 +281,35 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 	  </c:choose>
 					<!--  empty(null), ! empty(not null) -->
 					
+					<c:set var="aa" value="preview${count}"/>
 					
-					<c:if test="${A == 1 || article.imageFileName == null}"> 
-					
-					<!--  파일 선택  write2.jsp-->
-					<td scope="row"> <input id="write2" type="file" name="file" onchange="readURL(this);" /></td>
+						<tr>
+						<td width=30 align="center">첨부파일</td>
 						
-						  <td><img  id="preview" src="#" width=200 /></td>
-					</tr>
-					</c:if>
-				
-					
-					
 						
-				<!-- 		<tr>  tr은 줄개행을 의미
+						<div class="file_input">
+						<td>
+						<label> 
+						 <input type="button" id="file_route" name="file_route" value="파일추가" onClick="fn_addFile()"/>
+						</label>
+						</div>
+						</td>	
+						</tr>
+						
+						<tr>
+	      				<td colspan="4"><div id="d_file" name="All_file"></div></td>
+	  					 </tr>
+					
+							<!-- <tr>  tr은 줄개행을 의미
 							  <td scope="row"> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
 			                <td scope="row" width=30><img id="preview" src="#"  width=200 height=200/></td>
 							  </tr> -->
-							  
-							
-						
-		
-							  
-							  
-							
 		
 							<input type="hidden" id="A" value="${A}" />
+							<input type="hidden" id="A" value="${boardNo}" />
 						</tbody>
+						
+						
 				
 				<!-- 
 					 <td> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
@@ -382,7 +387,7 @@ $(function() {
 		if(A == 1) {
 			
 			
-			document.articleForm.action = "${contextPath}/board/write2"
+			document.articleForm.action = "${contextPath}/board/write3"
 			document.articleForm.submit();
 			
 		} else {
@@ -391,7 +396,7 @@ $(function() {
 
 			const formElement = $("#formObj"); 
 			
-			formElement.attr("action" , "/board/modify2");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+			formElement.attr("action" , "/board/modify3");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 			formElement.attr("method", "post"); 
 			formElement.submit();
 			
