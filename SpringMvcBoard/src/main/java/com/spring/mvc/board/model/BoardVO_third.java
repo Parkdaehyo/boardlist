@@ -15,6 +15,7 @@ public class BoardVO_third {
 	private Integer viewCnt;
 	private String imageFileName;
 	
+	
 	public Integer getBoardNo() {
 		return boardNo;
 	}

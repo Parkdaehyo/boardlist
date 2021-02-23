@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 
 
 import com.spring.mvc.board.model.BoardVO_third;
+import com.spring.mvc.board.model.ImageVO;
 import com.spring.mvc.commons.SearchVO;
 
 public interface third_IBoardMapper {
@@ -47,6 +48,13 @@ public interface third_IBoardMapper {
 		
 		int selectNewImageFileNO3();
 		
-		public List selectImageFileList(int articleNO) throws DataAccessException;
+		public List <ImageVO>selectImageFileList(int articleNO) throws DataAccessException;
+				
+		public List selectImageFileList3() throws DataAccessException;
+		
+		public List <ImageVO>selectImageFileNO(int boardNo) throws DataAccessException;
+		
+		//다중 이미지 수정문
+		public void updateNewImage(Map articleMap) throws DataAccessException;
 		
 }

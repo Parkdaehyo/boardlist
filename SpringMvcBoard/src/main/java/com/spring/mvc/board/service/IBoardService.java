@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Repository;
 
 import com.spring.mvc.board.model.BoardVO;
 import com.spring.mvc.board.model.BoardVO_third;
 import com.spring.mvc.board.model.BoardVO_two;
+import com.spring.mvc.board.model.ImageVO;
 import com.spring.mvc.commons.SearchVO;
-
-
 
 public interface IBoardService {
 
@@ -58,8 +58,12 @@ public interface IBoardService {
 			
 			public List selectImageFileList(int articleNO) throws DataAccessException;
 	
+			//t_imageFile 테이블
+			public List selectImageFileList3() throws DataAccessException;
+			
+			public List<ImageVO>selectImageFileNO(int articleNO) throws DataAccessException;
 	
-	
+		
 	
 	
 			/////////////////////////////////////////////////////////////////////////////////////

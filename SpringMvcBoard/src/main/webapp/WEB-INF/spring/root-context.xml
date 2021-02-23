@@ -12,9 +12,10 @@
 	<!-- 히카리 커넥션풀 빈 등록 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/spring?serverTimezone=Asia/Seoul&amp;allowMultiQueries=true" />
-		<property name="username" value="root" />
-		<property name="password" value="1234" />
+		<property name="jdbcUrl" value="jdbc:mysql://tecc.anyro.com:3306/ein_test?serverTimezone=Asia/Seoul&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true" />
+		<property name="username" value="ein_test" />
+		<property name="password" value="#db_ein_test#" />		
+	
 	
 	</bean>
 	
