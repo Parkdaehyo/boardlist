@@ -34,9 +34,9 @@ public class BoardMapperTest {
 	article.setTitle("다중 첨부파일 테스트 제목입니다.");
 	article.setWriter("다중 첨부파일");
 	article.setContent("다중 첨부파일 테스트 내용입니다");
-	article.setImageFileName1(null);
-	article.setImageFileName2(null);
-	article.setImageFileName3(null);
+	//article.setImageFileName1(null);
+	//article.setImageFileName2(null);
+	//article.setImageFileName3(null);
 
 	mapper.insert3(article); //Autowired가 없으면 이게 안되는거같음.
 	

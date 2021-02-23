@@ -27,7 +27,12 @@
 
 
 <c:forEach var="b" items="${articles}">
-
+<c:set var="isFileExisted" value="false"></c:set>
+<c:forEach var="image" items="${imageFileList}">
+<c:if test="${b.boardNo == image.boardNo and not empty image.imageFileName}">
+<c:set var="isFileExisted" value="true"></c:set>
+</c:if>
+</c:forEach>
 
 <tr>
 <td>${b.boardNo}</td>
@@ -38,7 +43,7 @@
 ${b.title}
 </a>
 <td>
-<c:if test="${not empty b.imageFileName}">
+<c:if test="${isFileExisted eq true}">
 <img src="/resources/images.jpg" width="20" />
 </c:if>
 </td>

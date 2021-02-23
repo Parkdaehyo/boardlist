@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -68,9 +69,13 @@ public class BoardController {
 
 		List<BoardVO_third> list = service.getArticleList3(search);
 		pc.setArticleTotalCount(service.countArticles3(search));
+		List<ImageVO> imageFileList = service.selectImageFileList3();
+		
+		
 
 		model.addAttribute("articles", list);
 		model.addAttribute("pc", pc);
+		model.addAttribute("imageFileList", imageFileList);
 		// model로 page 전해주고 있다.
 
 		return "board/list3";
@@ -88,6 +93,8 @@ public class BoardController {
 		
 		List<ImageVO> imageFileList = service.selectImageFileList(boardNo);
 		BoardVO_third vo = service.getArticle3(boardNo, request, response);
+		
+		System.out.println("content3의 imageFileList" +  imageFileList);
 		
 		model.addAttribute("imageFileList" , imageFileList);
 		model.addAttribute("article", vo);
@@ -122,10 +129,6 @@ public class BoardController {
 	public ResponseEntity write3(BoardVO_third article, RedirectAttributes ra, SearchVO searchvo,
 			MultipartHttpServletRequest multipartRequest, HttpServletResponse response) throws Exception {
 
-		
-		
-		
-		
 		String imageFileName=null;
 		
 		Map articleMap = new HashMap();
@@ -133,19 +136,10 @@ public class BoardController {
 		while(enu.hasMoreElements()){
 			String name=(String)enu.nextElement();
 			String value=multipartRequest.getParameter(name);
-			articleMap.put(name,value);
+			articleMap.put(name,value); //boardNo도 넘어온다.
 		}
-	
-		//String _boardNo = (String) articleMap.get("boardNo");
-		//int boardNo = Integer.parseInt(_boardNo);
-		
-		
-		 String boardNo_map = (String) articleMap.get("boardNo");
-		 
-		 
+		 String boardNo_map = (String) articleMap.get("boardNo"); //여기도 articleMap에서 넘어온 boardNo와 같은 boardNo를 반환한다
 		 System.out.println("post write3의 boardno" + boardNo_map +"번");
-		
-		
 		List<String> fileList =multiupload(multipartRequest); //업로드 메서드를 호출해야 비로소 첨부파일이 fileList에 담기기 시작한다.
 		List<ImageVO> imageFileList = new ArrayList<ImageVO>();
 		if(fileList!= null && fileList.size()!=0) {
@@ -156,6 +150,7 @@ public class BoardController {
 					imageFileList.add(imageVO);
 				
 			}
+		
 			articleMap.put("imageFileList", imageFileList);
 			articleMap.put("boardNo", boardNo_map);
 			
@@ -169,9 +164,9 @@ public class BoardController {
 			if(imageFileList!=null && imageFileList.size()!=0) { // imageFileList에 데이터가 있다면
 				for(ImageVO  imageVO:imageFileList) {
 					imageFileName = imageVO.getImageFileName(); 
-					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName); //temp 폴더에 파일 저장.
-					File destDir = new File(ARTICLE_IMAGE_REPO+File.separator+articleNO);
-					//destDir.mkdirs();
+					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName); //temp 폴더에 위치한 imageFile 들을 경로 셋팅.
+					File destDir = new File(ARTICLE_IMAGE_REPO+File.separator+boardNo_map);
+					destDir.mkdirs();
 					FileUtils.moveFileToDirectory(srcFile, destDir,true); // moveFileToDirectory: 글번호 폴더로 폴더를 이동시킨다.
 				}
 			}
@@ -204,9 +199,148 @@ public class BoardController {
 
 		return resEnt;
 	  }
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	@GetMapping("/modify3") // 여기까지 글번호가 어떻게 전달되는거지? -->input type hidden으로 boardNo가 보내졌다.
+	public String modify3(Integer boardNo, Model model, @ModelAttribute("p") PageVO paging, HttpServletRequest request,
+			HttpServletResponse response, SearchVO search) {
 
-	
-	
+		
+		//수정요청 진입시에 breakpoint 걸어버리면 수정화면 요청시에 멈춘다.
+		BoardVO_third vo = service.getArticle3(boardNo, request, response);
+		List<ImageVO> imageFileList = service.selectImageFileList(boardNo);		
+		
+		System.out.println("수정 요청 진입시 vo" + vo);
+		System.out.println("Result Data: " + vo);
+		model.addAttribute("article", vo);
+		model.addAttribute("imageFileList", imageFileList);
+		
+		// model.addAttribute("pc",pc);
+
+		int b = 2;
+		model.addAttribute("A", b);
+
+		return "board/write3";
+	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 다중첨부파일 수정
+	@PostMapping("/modify3")
+	@ResponseBody
+	public ResponseEntity modify3(BoardVO_third article, RedirectAttributes ra, SearchVO searchvo,
+			MultipartHttpServletRequest multipartRequest, HttpServletResponse response ,  HttpServletRequest request) throws Exception {
+
+		   String imageFileName = null;
+		
+		  multipartRequest.setCharacterEncoding("utf-8");
+		  Map<String,Object> articleMap = new HashMap<String, Object>();
+		
+		  Enumeration enu=multipartRequest.getParameterNames();
+			while(enu.hasMoreElements()){
+				String name=(String)enu.nextElement();
+				String value=multipartRequest.getParameter(name);
+				articleMap.put(name,value); //각종의 form 데이터 변수들이 getParameterNames()로 가져온 변수들이 모두 aritlceMap에 우선적으로 저장이된다.
+			}
+			
+			int vo_num = article.getBoardNo();
+			List<ImageVO> imageFileNOList = service.selectImageFileNO(vo_num); //19번, 20번 가져옴.
+			
+			List<String> fileList = multiupload(multipartRequest);
+			//길이에 상관없이 배열이 늘어난다.
+			List<ImageVO> imageFileList = new ArrayList<ImageVO>();
+			
+			if(fileList != null && fileList.size() != 0) {
+				
+				int i =0;
+				
+				for(String fileName : fileList) { //fileList에서 하나씩 fileName에 담고있다.
+					
+					ImageVO imageVO = new ImageVO();
+					imageVO.setImageFileName(fileName); //tiger가 한번 저장이 된 이후에 panda가 다시 셋팅되기 시작한다. 둘다 동시에 저장이 되는 것이 아니다.
+					imageVO.setBoardNo(vo_num);	//그런데 이경우는 애초에 fileList에 두개 imageFileName이 담겨져있어서 가능했다.
+					imageVO.setImageFileNO(imageFileNOList.get(i).getImageFileNO());
+							
+							
+					imageFileList.add(imageVO);
+					i++;
+				}
+			}
+			articleMap.put("boardNo_map2" , vo_num);
+			articleMap.put("imageFileList", imageFileList);
+			
+			String message;
+			ResponseEntity resEnt=null;
+			HttpHeaders responseHeaders = new HttpHeaders();
+			responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+			
+			
+		try {
+			service.updateArticle3(articleMap);
+			
+				if(imageFileList != null && imageFileList.size()!=0) {
+				for(ImageVO imageVO : imageFileList) { //박지성,나니가 32번으로 옮겨갔다
+					imageFileName = imageVO.getImageFileName();
+					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName); //temp 폴더에 파일 저장.
+					//일단 글번호로 옮겨간것 팩트
+					File destDir = new File(ARTICLE_IMAGE_REPO+File.separator+vo_num); 
+					destDir.mkdirs();
+					FileUtils.moveFileToDirectory(srcFile, destDir,true);
+		
+			int count = 0;
+			
+			String originalFileName =(String) articleMap.get("originalFileName");
+			List<String> originalList = new ArrayList<String>();
+			
+			originalList.add(originalFileName);
+			
+			System.out.println("originalList" + originalList);
+			
+		    File oldFile = new File(ARTICLE_IMAGE_REPO+File.separator+vo_num+File.separator+ originalList.get(count));
+	       
+	        oldFile.delete();
+	   		   		
+	   		count++;
+	   		
+	   		originalList.removeAll(originalList);
+	   		
+	}
+}
+
+
+			
+			message = "<script>";
+			message += " alert('등록 되었습니다.');";
+			System.out.println("수정 성공시..");
+			message += " location.href='"+multipartRequest.getContextPath()+"/board/list3';"; // 등록이 된 이후에 이동될 URL을 message에 담았다.
+			message +=" </script>";
+
+			resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED); //message를 ResponseEntity(반응 독립체) 객체에 
+		
+		    
+		    
+		    
+		} catch(Exception e) {
+			if(imageFileList != null && imageFileList.size()!=0) {
+				
+				for(ImageVO imageVO : imageFileList) {
+					imageFileName = imageVO.getImageFileName();
+					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName);
+					srcFile.delete();
+				}
+			}
+			
+			message = " <script>";
+			message += " alert('글이 등록 되었습니다.');";
+			System.out.println("수정 실패시..");
+			message += " location.href='"+multipartRequest.getContextPath()+"/board/list3';";
+			message +=" </script>";
+			resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED);
+			e.printStackTrace();
+		}
+		return resEnt;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	@PostMapping("/delete3")
 	public String remove3(Integer boardNo, PageVO paging, RedirectAttributes ra) {
@@ -872,7 +1006,7 @@ public class BoardController {
 
 					mFile.transferTo(
 							new File(ARTICLE_IMAGE_REPO + File.separator + "temp" + File.separator + imageFileName3)); /// 파일이																										/// 없으면
-																							/// 																										/// 저장시킴.
+																																														/// 저장시킴.
 				}
 			}
 
@@ -903,21 +1037,22 @@ public class BoardController {
 	private List<String> multiupload(MultipartHttpServletRequest multipartRequest) throws Exception{
 		List<String> fileList= new ArrayList<String>();
 		Iterator<String> fileNames = multipartRequest.getFileNames();
-		while(fileNames.hasNext()){
+		while(fileNames.hasNext()){ 
 			String fileName = fileNames.next();
 			MultipartFile mFile = multipartRequest.getFile(fileName);
-			String originalFileName=mFile.getOriginalFilename();
+			String originalFileName=mFile.getOriginalFilename(); //Return the original filename in the client's filesystem. 
 			
 			fileList.add(originalFileName); //여기서 파일 추가가되네
 			
-			File file = new File(ARTICLE_IMAGE_REPO +"\\"+ fileName);
-			if(mFile.getSize()!=0){ //File Null Check
-				if(! file.exists()){ //��λ� ������ �������� ���� ���
-					if(file.getParentFile().mkdirs()){ //��ο� �ش��ϴ� ���丮���� ����
-							file.createNewFile(); //���� ���� ����
+			File file = new File(ARTICLE_IMAGE_REPO +File.separator+ fileName);
+			if(mFile.getSize()!=0){ 
+				if(! file.exists()){ 
+					if(file.getParentFile().mkdirs()){ 
+							file.createNewFile(); 
 					}
 				}
-				mFile.transferTo(new File(ARTICLE_IMAGE_REPO +File.separator+"temp"+ File.separator+originalFileName)); 
+				//여기서 temp폴더에 monkey가 저장이 된것을 확인할 수 있었다.
+				mFile.transferTo(new File(ARTICLE_IMAGE_REPO +File.separator+"temp"+ File.separator+originalFileName));  
 			}
 		}
 		return fileList;

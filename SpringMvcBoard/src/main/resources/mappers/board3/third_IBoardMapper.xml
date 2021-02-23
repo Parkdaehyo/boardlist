@@ -76,19 +76,10 @@
 	
 
 	<update id="updateArticle3" parameterType="java.util.Map">
-	update new_board3
-	set title=#{title},
-	content =#{content},
-	<if test="imageFileName1 != '' and imageFileName1 != null">
-	imageFileName1 =#{imageFileName1}
-	</if>
-	<if test="imageFileName2 != '' and imageFileName2 != null">
-	,imageFileName2 =#{imageFileName2}
-	</if>
-	<if test="imageFileName3 != '' and imageFileName3 != null">
-	,imageFileName3 =#{imageFileName3}
-	</if>
-	where board_no=#{boardNo}
+		update new_board3
+		set title=#{title},
+		content=#{content}
+		where board_no=#{boardNo}
 	</update>
 	
 	
@@ -149,8 +140,29 @@ WHERE board_no = #{boardNo}
       where board_no=#{boardNo}	
     ]]>
 	</select>
+	
+	<select id="selectImageFileList3" resultMap="imgResult">
+    <![CDATA[
+      SELECT * from t_imageFile
+    ]]>
+	</select>
+		
+	
+	<update id="updateNewImage" parameterType="java.util.Map"> 
+			UPDATE t_imageFile  SET
+		   		imageFileName=#{imageFileName}
+		 	where board_no=#{boardNo}
+		 	and  imageFileNO=#{imageFileNO}
+		</update>
 		
 		
+	<select id="selectImageFileNO" resultMap="imgResult" parameterType="int">
+    <![CDATA[
+      SELECT imageFileNO from t_imageFile
+       where board_no=#{boardNo}	
+    ]]>
+	</select>
+	
 		
     
     

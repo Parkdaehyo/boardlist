@@ -224,8 +224,8 @@ width: 150px
 			     <c:set var="aa" value="preview${count }"/>
 			   <!--   <c:out value="${aa}" /> -->	
 			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
-			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" /><br>
-			<%--     	    <img src="${contextPath}/download.do?articleNO=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
+			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200" /><br>
+			    	 <%--    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
 			   </td>   
 			  </tr>  
 			  <tr>
@@ -237,14 +237,22 @@ width: 150px
 			 <!--  추가 -->
 			 <c:set var="count" value="${count +1 }" />
 			 <c:out value="${count }" />
+			 
 		</c:forEach>
- </c:if>
+		</c:if>
+		
+		
+		 
+
 
 			
 			
 						
 						</tbody>
 </table>
+
+
+
 
 
 
@@ -266,17 +274,30 @@ width: 150px
 
 </form>
 
+<c:forEach var="image" items="${imageFileList}" varStatus="status">
+<c:if test="${not empty image.imageFileName}">
+		
+<div style="position: absolute; left: 850px;">
+<form method="post" action="${contextPath}/download.do?boardNo=${image.boardNo}&imageFileName=${image.imageFileName}">
+
+
+<input type="submit" value="이미지 다운로드" />	
+</c:if>	
+</c:forEach>
+		
+
+
 <!--  컨트롤러의 패키지의 위치는 상관없이 매핑명이 download.do이므로 다운로드가 가능합니다. 패키지의 위치는 상관없습니다 -->
 
-<c:if test="${not empty article.imageFileName}">
+<%-- <c:if test="${not empty imageFileList.imageFileName}">
 <div style="position: absolute; left: 850px;">
-<form method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}">
+<form method="post" action="${contextPath}/download.do?boardNo=${imageFileList.boardNo}&imageFileName=${imageFileList.imageFileName}">
 
 
 <input type="submit" value="이미지 다운로드" />	
 </c:if>	
 </form>
-</div>
+</div> --%>
 </body>
 
 <script>

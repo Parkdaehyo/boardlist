@@ -136,13 +136,17 @@ width: 150px
 <script>
 
 <!-- 파일을 보이게 할 수 있도록 읽어주는 함수 -->
+
 function readURL(input) {
     if (input.files && input.files[0]) {
-	      var reader = new FileReader();
-	      reader.onload = function (e) {
-	        $('#preview').attr('src', e.target.result);
+        var reader = new FileReader();
+        reader.onload = function (e) {
+       	 
+       	 var count = 0;
+       	 $('#i_imageFileName'+count).attr('src', e.target.result);
+       	 //$('#preview').attr('src', e.target.result);
         }
-       reader.readAsDataURL(input.files[0]);
+        reader.readAsDataURL(input.files[0]);
     }
 }  
 
@@ -215,8 +219,13 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						write2.jsp로 진입할시에 value의 aritlce 값들은
 						전혀 표시가 안된다.
 						 -->
+						 <c:if test="${A == 1}">
 						<input type="hidden" id="ABC" name="boardNo" value="${boardNo}" />
-							
+						</c:if>
+						
+						<c:if test="${A == 2}">
+						<input tyep="hidden" id="DEF" name="boardNo" value="${article.boardNo}"/>	
+						</c:if>
 					
  					<%-- 	 <input id="boardno" type="hidden" name="boardNo" value="${article.boardNo}" /> --%>
  						 
@@ -245,44 +254,52 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 							<td colspan="3" id=""><textarea id="content" name="content" cols="90" rows="10">${article.content}</textarea></td>
 						
 						</tr>
+						
+						
+						
 					
-						 <c:choose> 
-						 
-				 
-	  <c:when test="${not empty article.imageFileName && article.imageFileName!='null'}">
-	  	<c:if test="${A == 2}">	
-	   	<tr>
-		    <td width="150" align="center" bgcolor=""  rowspan="2">
-		      이미지
-		   </td>
-		   <td>
-		     <input  type="hidden"  name="file" id="i_imageFileName" value="${article.imageFileName}"   />
-		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName}" />
-		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" width=200 id="preview"/><br>
-		   </td>   
-		  </tr>  
-		 		<!--  이 코드는 파일선택이다. 파일 선택을 누르게 할 수있다. -->
-		    	<td scope="row"> 
-		    						<!--  이걸 imageFileName으로 바꿨다고 오류가 난다고?? -->
-		    	<input type="file" name="file" onchange="readURL(this);" /></td>
-		    	
-		</td>
-		    	
-		    	<tr>
-		    	<!--  preview가 업로드시에 파일이 브라우저에 나타나게하는 역할 근데 id prieview가 위에 있으니 이것은 필요 없다.-->
-	<!-- 	    	  <td><img  id="preview" src="#" width=200 /></td>  -->
-			</tr>
-		    <!-- <td>
-		       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
-		    </td> -->
+		 <c:if test="${not empty imageFileList && imageFileList!='null' }">
+                 <!-- 밖에다 써야함. -->
+			   <c:set var="count" value="0"/>
+	 		 <c:forEach var="item" items="${imageFileList}" varStatus="status" >
+	 		 <input id="imageFileNO"type="hidden" name="imageFileNO" value="${item.imageFileNO}"/>
+
+			    <td width="150" align="center" rowspan="2">
+			          이미지${status.count }
+			   </td>
+			   <td>
+			     <input  type="hidden" name="originalFileName" value="${item.imageFileName}" />	
+			     <!-- 추가 --> 
+			     <c:set var="aa" value="preview${count }"/>
+			   <!--   <c:out value="${aa}" /> -->	
+			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
+			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200"/><br>
+			    	 <%--    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
+			   </td>   
+			  </tr>  
+			  
+				<c:if test="${A == 2}">  
+			  <tr>
+			    
+			    <td>  
+			    
+			    <!--  인자로  img 태그 id값도 보낸다. --> <!-- 여기선 imageFileName이 board_type의 역할을 한다. -->
+			       <input  class="selectimage" type="file"  name="file" id="i_imageFileName" onchange="readURL(this, '${aa}');"   />
+			    </td>
+			 </tr>
+			</c:if>
+			
+			 <!--  추가 -->
+			 <c:set var="count" value="${count +1 }" />
+			 <c:out value="${count }" />
+			 
+		</c:forEach>
+		</c:if>
 		
-		 </c:if>
-		 </c:when>
-	  </c:choose>
 					<!--  empty(null), ! empty(not null) -->
 					
-					
-					<c:if test="${A == 1 || article.imageFileName == null}"> 
+					<!--  일단 수정시에도 이게 추가되야 되는데 일단은 수정부터 되는지 확인해보고 잘되면 이 기능을 활성화 시킬 것이다. -->
+					<c:if test="${A == 1}"> 
 					
 					<c:set var="aa" value="preview${count}"/>
 					
@@ -398,34 +415,50 @@ $(function() {
 			document.articleForm.submit();
 			
 		} else {
-			
-			
-
+		
 			const formElement = $("#formObj"); 
 			
 			formElement.attr("action" , "/board/modify3");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 			formElement.attr("method", "post"); 
 			formElement.submit();
-			
 		}
 		
-		
 	});
-		
-		
-		
-		
-		
-		
-		
-		
+	
 		console.log("저장 버튼이 클릭됨");
-			
-		
-		
-		
 		
 	});
+	
+	  var count = 0;
+	
+	  $("#i_imageFileName").click(function() {
+		    
+		  $('#i_imageFileName').attr({
+				'name' : 'imageFileName' + count++
+				
+				});
+		  
+			 
+		  $('#imageFileNO').attr({
+				'name' : 'imageFileNO' + count++
+				
+				}); 	
+	  
+	  
+
+		 	//$("#i_imageFileName").attr('id', 'i_#imageFileName'+ count++);
+		 	
+		 	   var active = document.getElementById("i_imageFileName");
+		 	   active.id = 'i_imageFileName' + count++;
+		 	   
+		 	
+	  }); 	
+	  
+	  
+
+	
+	
+	
 	
 	
 	

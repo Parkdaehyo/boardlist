@@ -1,5 +1,6 @@
 package com.spring.mvc.board.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import com.spring.mvc.commons.SearchVO;
 @Service
 public class BoardService implements IBoardService {
 
+	private static final String ARTICLE_IMAGE_REPO = "C:+File.separator+board+File.separator+article_image";
 	
 	@Inject
 	private IBoardMapper mapper;
@@ -384,8 +387,54 @@ public class BoardService implements IBoardService {
 
 	@Override
 	public void updateArticle3(Map articleMap) throws DataAccessException {
-		// TODO Auto-generated method stub
 		
+		mapper3.updateArticle3(articleMap);
+
+		List<ImageVO> imageFileList = (List<ImageVO>) articleMap.get("imageFileList");
+		
+		System.out.println("=========================");
+		System.out.println(">size="+imageFileList.size());
+		
+		for(ImageVO imageVO : imageFileList) {
+			System.out.println(">> start for");
+		
+			  String imageFileName = imageVO.getImageFileName(); 
+			  int boardNo = imageVO.getBoardNo();
+			  int imageFileNO = imageVO.getImageFileNO();
+		  		
+			  System.out.println("DAO까지 파일이름이 넘어왔는가?: " + imageFileName);
+			  System.out.println("DAO까지 글번호가 넘어왔는가?: " + boardNo); 
+			  System.out.println("DAO까지 이미지번호가 넘어왔는가?: " + imageFileNO);
+			 
+			   mapper3.updateNewImage(articleMap);
+			  System.out.println(">> end for");
+			  
+			  			  
+			  
+			  
+			  
+			  
+		}
+		
+		
+		
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		System.out.println("=========================");
 	}
 
 	@Override
@@ -433,7 +482,7 @@ public class BoardService implements IBoardService {
 		//왜 1이 리턴되는거지?
 		int insertNewArticle3_boardNo = mapper3.insertNewArticle3(articleMap); //boardNo가 계속 1만 셋팅되고 있는상황
 		
-		List<ImageVO> imageFileList = (ArrayList)articleMap.get("imageFileList");
+		List<ImageVO> imageFileList = (ArrayList<ImageVO>)articleMap.get("imageFileList");
 		
 		System.out.println("boarservice3의 articleMap" + articleMap);
 		
@@ -441,7 +490,7 @@ public class BoardService implements IBoardService {
 		
 		
 		
-		int board_no = (Integer)articleMap.get("boardNo");
+		int board_no = (int) articleMap.get("boardNo");
 		
 		
 		int imageFileNO = selectNewImageFileNO3(); //MAX값 가져오는것.
@@ -465,9 +514,21 @@ public class BoardService implements IBoardService {
 	}
 
 	@Override
-	public List selectImageFileList(int articleNO) throws DataAccessException {
+	public List <ImageVO>selectImageFileList(int articleNO) throws DataAccessException {
 		// TODO Auto-generated method stub
 		return mapper3.selectImageFileList(articleNO);
+	}
+
+	@Override
+	public List selectImageFileList3() throws DataAccessException {
+		// TODO Auto-generated method stub
+		return mapper3.selectImageFileList3();
+	}
+
+	@Override
+	public List<ImageVO>selectImageFileNO(int articleNO) throws DataAccessException {
+	
+		return mapper3.selectImageFileNO(articleNO);
 	}
 	
 	
