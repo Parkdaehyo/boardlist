@@ -143,7 +143,8 @@ function readURL(input) {
         reader.onload = function (e) {
        	 
        	 var count = 0;
-       	 $('#i_imageFileName'+count).attr('src', e.target.result);
+       //이게 각각의 파일선택이 어디에 업로드를 해줄지 위치를 찾아주는 역할을 한다
+       	 $('#i_imageFileName'+ count).attr('src', e.target.result); 
        	 //$('#preview').attr('src', e.target.result);
         }
         reader.readAsDataURL(input.files[0]);
@@ -222,10 +223,10 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						 <c:if test="${A == 1}">
 						<input type="hidden" id="ABC" name="boardNo" value="${boardNo}" />
 						</c:if>
-						
-						<c:if test="${A == 2}">
-						<input tyep="hidden" id="DEF" name="boardNo" value="${article.boardNo}"/>	
+							  	<c:if test="${A == 2}">
+						<input type="hidden" id="DEF" name="boardNo" value="${article.boardNo}"/>	
 						</c:if>
+					
 					
  					<%-- 	 <input id="boardno" type="hidden" name="boardNo" value="${article.boardNo}" /> --%>
  						 
@@ -236,6 +237,8 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
  						 셋팅된다.
  						 
  						  -->
+ 						  
+ 					
           				<input type="hidden" name="page" value="${p.page}">
           				<input type="hidden" name="countPerPage" value="${p.countPerPage}">
  						
@@ -257,9 +260,12 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						
 						
 						
+					<c:choose>
 					
-		 <c:if test="${not empty imageFileList && imageFileList!='null' }">
-                 <!-- 밖에다 써야함. -->
+					<c:when test="${not empty imageFileList && imageFileList!='null' }">
+					
+					
+					    <!-- 밖에다 써야함. -->
 			   <c:set var="count" value="0"/>
 	 		 <c:forEach var="item" items="${imageFileList}" varStatus="status" >
 	 		 <input id="imageFileNO"type="hidden" name="imageFileNO" value="${item.imageFileNO}"/>
@@ -268,7 +274,7 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 			          이미지${status.count }
 			   </td>
 			   <td>
-			     <input  type="hidden" name="originalFileName" value="${item.imageFileName}" />	
+			     <input id="original" type="hidden" name="originalFileName" value="${item.imageFileName}" />	
 			     <!-- 추가 --> 
 			     <c:set var="aa" value="preview${count }"/>
 			   <!--   <c:out value="${aa}" /> -->	
@@ -278,16 +284,124 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 			   </td>   
 			  </tr>  
 			  
-				<c:if test="${A == 2}">  
+			  
+
 			  <tr>
 			    
 			    <td>  
 			    
-			    <!--  인자로  img 태그 id값도 보낸다. --> <!-- 여기선 imageFileName이 board_type의 역할을 한다. -->
+			    <!--  인자로  img 태그 id값도 보낸다. --> 
 			       <input  class="selectimage" type="file"  name="file" id="i_imageFileName" onchange="readURL(this, '${aa}');"   />
 			    </td>
 			 </tr>
-			</c:if>
+			 
+			 
+		
+			
+			
+			
+			 <!--  추가 -->
+			 <c:set var="count" value="${count +1 }" />
+			 <c:out value="${count }" />
+			 
+		</c:forEach>
+					</c:when>
+					
+			
+			<c:otherwise>
+			
+						<tr>
+						<td width=30 align="center">첨부파일</td>
+						
+						
+						<div class="file_input">
+						<td>
+						
+						 <input type="button" id="file_route" name="file_route" value="파일추가" onClick="fn_addFile()"/>
+					
+						</div>
+						</td>	
+						</tr>
+						
+						<tr>
+	      				<td colspan="4"><div id="d_file" name="All_file"></div></td>
+	  					 
+	  					<!--    <td><img  id="preview" src="#" width=200 /></td> -->
+	  					 </tr>
+	  					 
+					
+							<!-- <tr>  tr은 줄개행을 의미
+							  <td scope="row"> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
+			                <td scope="row" width=30><img id="preview" src="#"  width=200 height=200/></td>
+							  </tr> -->
+		
+							<input type="hidden" id="A" value="${A}" />
+			
+			</c:otherwise>
+					
+		<%-- 				
+						<tr>
+						<td width=30 align="center">첨부파일</td>
+						
+						
+						<div class="file_input">
+						<td>
+						
+						 <input type="button" id="file_route" name="file_route" value="파일추가" onClick="fn_addFile()"/>
+					
+						</div>
+						</td>	
+						</tr>
+						
+						<tr>
+	      				<td colspan="4"><div id="d_file" name="All_file"></div></td>
+	      				
+	  					 </tr>
+	  					 
+	  					 	<input type="hidden" id="A" value="${A}" /> --%>
+					
+				
+					
+					
+					</c:choose>
+					
+					
+					
+					
+	<%-- 	 <c:if test="${not empty imageFileList && imageFileList!='null' }">
+                 <!-- 밖에다 써야함. -->
+			   <c:set var="count" value="0"/>
+	 		 <c:forEach var="item" items="${imageFileList}" varStatus="status" >
+	 		 <input id="imageFileNO"type="hidden" name="imageFileNO" value="${item.imageFileNO}"/>
+
+			    <td width="150" align="center" rowspan="2">
+			          이미지${status.count }
+			   </td>
+			   <td>
+			     <input id="original" type="hidden" name="originalFileName" value="${item.imageFileName}" />	
+			     <!-- 추가 --> 
+			     <c:set var="aa" value="preview${count }"/>
+			   <!--   <c:out value="${aa}" /> -->	
+			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
+			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200"/><br>
+			    	    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br>
+			   </td>   
+			  </tr>  
+			  
+			
+			  <tr>
+			    
+			    <td>  
+			    
+			    <!--  인자로  img 태그 id값도 보낸다. --> 
+			       <input  class="selectimage" type="file"  name="file" id="i_imageFileName" onchange="readURL(this, '${aa}');"   />
+			    </td>
+			 </tr>
+			 
+			 
+		
+			
+			
 			
 			 <!--  추가 -->
 			 <c:set var="count" value="${count +1 }" />
@@ -295,23 +409,25 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 			 
 		</c:forEach>
 		</c:if>
-		
+		 --%>
 					<!--  empty(null), ! empty(not null) -->
 					
 					<!--  일단 수정시에도 이게 추가되야 되는데 일단은 수정부터 되는지 확인해보고 잘되면 이 기능을 활성화 시킬 것이다. -->
-					<c:if test="${A == 1}"> 
 					
-					<c:set var="aa" value="preview${count}"/>
 					
-						<tr>
+						
+	
+				
+						
+				<%-- 		<tr>
 						<td width=30 align="center">첨부파일</td>
 						
 						
 						<div class="file_input">
 						<td>
-						<label> 
+						
 						 <input type="button" id="file_route" name="file_route" value="파일추가" onClick="fn_addFile()"/>
-						</label>
+					
 						</div>
 						</td>	
 						</tr>
@@ -330,8 +446,15 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 		
 							<input type="hidden" id="A" value="${A}" />
 							
-							</c:if>
+				
+							 --%>
+						
+						
+						
+						
 						</tbody>
+						
+						
 						
 						
 				
@@ -429,31 +552,80 @@ $(function() {
 		
 	});
 	
-	  var count = 0;
 	
-	  $("#i_imageFileName").click(function() {
+	
+	
+	
+	
+	  //var count = 0;
+	
+	/*   $("#i_imageFileName").click(function() {
 		    
-		  $('#i_imageFileName').attr({
-				'name' : 'imageFileName' + count++
+		  $('#i_imageFileName').attr{(
+				'name' : 'file' + count++
 				
-				});
+				
+				
+		  }); */
+		  
+		  var count = 0;
+		  
+		  //.class로 접근하면 차례대로 변한다.
+		  $(".selectimage").click(function() {
+			    
+			  //alert('');
+			  
+			  $('#i_imageFileName').attr(
+					  "name" , "file" + count++
+					);
+		  
+		  
+				 
+			  $('#i_imageFileName').attr(
+					'id' , 'i_imageFileName' + count++
+					
+					); 		  
+		  
 		  
 			 
-		  $('#imageFileNO').attr({
-				'name' : 'imageFileNO' + count++
+		  	$('#imageFileNO').attr(
+				'name' , 'imageFileNO' + count++
 				
-				}); 	
+				); 	
 	  
+			//var cnt = 1;
+			
+			/*   $(".selectimage").click(function() {
+				    
+				  $('#i_imageFileName').attr(
+						  "id" , "file" + count++
+			  });
+			
+			 */
+			
+			
+			
+			
+			
+			
 	  
 
 		 	//$("#i_imageFileName").attr('id', 'i_#imageFileName'+ count++);
 		 	
-		 	   var active = document.getElementById("i_imageFileName");
-		 	   active.id = 'i_imageFileName' + count++;
-		 	   
-		 	
+		 	//   var active = document.getElementById("i_imageFileName");
+		 	 //  active.id = 'i_imageFileName' + count++;
+		 	  
 	  }); 	
 	  
+	  
+	  $("#original").click(function() {
+	  
+	  $('#original').attr({
+			'name' : 'originalFileName' + count++
+			
+			}); 	
+	  });
+
 	  
 
 	

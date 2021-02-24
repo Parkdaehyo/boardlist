@@ -12,6 +12,8 @@ public class ImageVO {
 	private Date regDate;
 	private int boardNo;
 	
+	private String originImageFileName;
+	
 	
 	
 	public int getImageFileNO() {
@@ -31,6 +33,12 @@ public class ImageVO {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+	}
+	public String getOriginImageFileName() {
+		return originImageFileName;
+	}
+	public void setOriginImageFileName(String originImageFileName) {
+		this.originImageFileName = originImageFileName;
 	}
 	public Date getRegDate() {
 		return regDate;

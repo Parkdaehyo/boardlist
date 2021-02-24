@@ -2,8 +2,10 @@ package com.spring.mvc.board.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
@@ -314,6 +316,13 @@ public class BoardService implements IBoardService {
 		mapper3.insertNewArticle3(articleMap);
 		return boardNo;
 	}
+	
+	
+	
+	
+	
+	
+	
 
 	
 	@Override
@@ -388,15 +397,22 @@ public class BoardService implements IBoardService {
 	@Override
 	public void updateArticle3(Map articleMap) throws DataAccessException {
 		
-		mapper3.updateArticle3(articleMap);
+		//articleMap을 넘겨서 정상적으로 데이터가 수정이된다.
+		mapper3.updateArticle3(articleMap); 
 
-		List<ImageVO> imageFileList = (List<ImageVO>) articleMap.get("imageFileList");
+		List<ImageVO> imageFileList = (ArrayList) articleMap.get("imageFileList");
 		
 		System.out.println("=========================");
 		System.out.println(">size="+imageFileList.size());
+	
 		
+		//imageFileList에 바뀐 imageFileName 이미지가 들어온다.
+		
+	
 		for(ImageVO imageVO : imageFileList) {
 			System.out.println(">> start for");
+			
+			if(imageVO.getImageFileName() != null) {
 		
 			  String imageFileName = imageVO.getImageFileName(); 
 			  int boardNo = imageVO.getBoardNo();
@@ -405,38 +421,19 @@ public class BoardService implements IBoardService {
 			  System.out.println("DAO까지 파일이름이 넘어왔는가?: " + imageFileName);
 			  System.out.println("DAO까지 글번호가 넘어왔는가?: " + boardNo); 
 			  System.out.println("DAO까지 이미지번호가 넘어왔는가?: " + imageFileNO);
-			 
-			   mapper3.updateNewImage(articleMap);
-			  System.out.println(">> end for");
+
+			  articleMap = imageFileList.stream()
+				      	.collect(Collectors.groupingBy( arg -> arg, HashMap::new, Collectors.counting()));
+
 			  
-			  			  
-			  
-			  
-			  
-			  
+			  mapper3.updateNewImage(imageVO);
+		  }
+		
 		}
-		
-		
-		
-		
-		
-		
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		System.out.println("=========================");
 	}
-
+		
+		
+	
 	@Override
 	public void update3(Map articleMap) throws DataAccessException {
 		// TODO Auto-generated method stub
@@ -474,13 +471,16 @@ public class BoardService implements IBoardService {
 		
 		
 		int boardNo = mapper3.selectNewArticleNO3();
+	
 		
-		System.out.println("boardNo값은 뭔데?" + boardNo);
+		System.out.println("등록시 boardNo" + boardNo);
 		
 		articleMap.put("boardNo" , boardNo); 
 		
 		//왜 1이 리턴되는거지?
 		int insertNewArticle3_boardNo = mapper3.insertNewArticle3(articleMap); //boardNo가 계속 1만 셋팅되고 있는상황
+		
+		System.out.println("반환된 글번호" + insertNewArticle3_boardNo);
 		
 		List<ImageVO> imageFileList = (ArrayList<ImageVO>)articleMap.get("imageFileList");
 		
@@ -494,6 +494,13 @@ public class BoardService implements IBoardService {
 		
 		
 		int imageFileNO = selectNewImageFileNO3(); //MAX값 가져오는것.
+		
+		/*
+		 * if() {
+		 * 
+		 * }
+		 */
+		
 		
 		for(ImageVO imageVO : imageFileList){
 			imageVO.setImageFileNO(++imageFileNO);

@@ -282,9 +282,12 @@ width: 150px
 
 
 <input type="submit" value="이미지 다운로드" />	
+</form>
+</div>
 </c:if>	
+
 </c:forEach>
-		
+	
 
 
 <!--  컨트롤러의 패키지의 위치는 상관없이 매핑명이 download.do이므로 다운로드가 가능합니다. 패키지의 위치는 상관없습니다 -->

@@ -46,15 +46,17 @@ public interface third_IBoardMapper {
 	
 		public int insertNewImage3(Map articleMap) throws DataAccessException;
 		
-		int selectNewImageFileNO3();
+		Integer selectNewImageFileNO3();
 		
 		public List <ImageVO>selectImageFileList(int articleNO) throws DataAccessException;
 				
 		public List selectImageFileList3() throws DataAccessException;
 		
+		
+		//imageFileNO 가져온다
 		public List <ImageVO>selectImageFileNO(int boardNo) throws DataAccessException;
 		
 		//다중 이미지 수정문
-		public void updateNewImage(Map articleMap) throws DataAccessException;
+		public void updateNewImage(ImageVO imagevo) throws DataAccessException;
 		
 }

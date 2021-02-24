@@ -127,11 +127,33 @@ WHERE board_no = #{boardNo}
 
 </delete>
 
+
+
+
 <select id="selectNewImageFileNO3" resultType="int">
     <![CDATA[
-     SELECT IFNULL(MAX(imageFileNO) ,0) from t_imageFile;		
+     SELECT IFNULL(MAX(imageFileNO) ,0) + 1 from t_imageFile;		
     ]]>
-	</select>
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+		
+		
+		
+		
 		
 			<!--  이미지 파일을 보여주는 조회문 -->
 	<select id="selectImageFileList" resultMap="imgResult" parameterType="int">
@@ -148,9 +170,13 @@ WHERE board_no = #{boardNo}
 	</select>
 		
 	
-	<update id="updateNewImage" parameterType="java.util.Map"> 
+	<update id="updateNewImage" parameterType="com.spring.mvc.board.model.ImageVO"> 
 			UPDATE t_imageFile  SET
+			
+		 <if test="imageFileName!='' and imageFileName!=null">
 		   		imageFileName=#{imageFileName}
+		 	</if>
+		 	
 		 	where board_no=#{boardNo}
 		 	and  imageFileNO=#{imageFileNO}
 		</update>

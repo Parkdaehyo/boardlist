@@ -98,6 +98,7 @@ public class BoardController {
 		
 		model.addAttribute("imageFileList" , imageFileList);
 		model.addAttribute("article", vo);
+		
 		return "board/content3";
 	}
 
@@ -220,6 +221,8 @@ public class BoardController {
 
 		int b = 2;
 		model.addAttribute("A", b);
+	
+		
 
 		return "board/write3";
 	}
@@ -239,13 +242,20 @@ public class BoardController {
 			while(enu.hasMoreElements()){
 				String name=(String)enu.nextElement();
 				String value=multipartRequest.getParameter(name);
-				articleMap.put(name,value); //각종의 form 데이터 변수들이 getParameterNames()로 가져온 변수들이 모두 aritlceMap에 우선적으로 저장이된다.
+				//각종의 form 데이터 변수들이 getParameterNames()로 가져온 변수들이 모두 aritlceMap에 우선적으로 저장이된다.
+				articleMap.put(name,value); 
 			}
 			
 			int vo_num = article.getBoardNo();
-			List<ImageVO> imageFileNOList = service.selectImageFileNO(vo_num); //19번, 20번 가져옴.
 			
-			List<ImageVO> imageFileNameList = service.selectImageFileList(vo_num);
+			List<ImageVO> imageFileNOList = service.selectImageFileNO(vo_num); 
+			
+			
+			Integer imgNum = service.selectNewImageFileNO3();
+			
+			// origin file name list
+			String[] originFileNames = request.getParameterValues("originalFileName");
+			
 			
 			
 			List<String> fileList = multiupload(multipartRequest);
@@ -255,61 +265,74 @@ public class BoardController {
 			if(fileList != null && fileList.size() != 0) {
 				
 				int i =0;
-				
-				for(String fileName : fileList) { //fileList에서 하나씩 fileName에 담고있다.
+				//fileList에서 하나씩 fileName에 담고있다.
+				for(String fileName : fileList) { 
 					
 					ImageVO imageVO = new ImageVO();
-					imageVO.setImageFileName(fileName); //tiger가 한번 저장이 된 이후에 panda가 다시 셋팅되기 시작한다. 둘다 동시에 저장이 되는 것이 아니다.
-					imageVO.setBoardNo(vo_num);	//그런데 이경우는 애초에 fileList에 두개 imageFileName이 담겨져있어서 가능했다.
-					imageVO.setImageFileNO(imageFileNOList.get(i).getImageFileNO());
+					//tiger가 한번 저장이 된 이후에 panda가 다시 셋팅되기 시작한다. 둘다 동시에 저장이 되는 것이 아니다.
+					imageVO.setImageFileName(fileName); 
+					imageVO.setBoardNo(vo_num);	
+					
+					if(imageFileNOList != null && imageFileNOList.size() !=0) {
+						
+						imageVO.setImageFileNO(imageFileNOList.get(i).getImageFileNO());
+					} else {
+						imageVO.setImageFileNO(imgNum);
+						
+					}
+					
+					
 							
-							
+					if(originFileNames != null) {
+					imageVO.setOriginImageFileName(originFileNames[i]);	
+					}
+					
 					imageFileList.add(imageVO);
 					i++;
 				}
 			}
 			articleMap.put("boardNo_map2" , vo_num);
-			articleMap.put("imageFileList", imageFileList);
+			
+			//articleMap에서 KEY값 imageFileList를 저장
+			articleMap.put("imageFileList", imageFileList); 
 			
 			String message;
 			ResponseEntity resEnt=null;
 			HttpHeaders responseHeaders = new HttpHeaders();
+			
 			responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 			
 			
 		try {
+			
 			service.updateArticle3(articleMap);
 			
 			
 			int count = 0;
 			
-			List<String> originalList = new ArrayList<String>();
-			
-			if(imageFileList != null && imageFileList.size()!=0) {
-				for(ImageVO imageVO : imageFileNameList) { //박지성,나니가 32번으로 옮겨갔다
-			   		imageVO.getImageFileName();
-			   		
-			   		imageFileNameList.add(imageVO);
-			   		
-			   		
-			   		File oldFile = new File(ARTICLE_IMAGE_REPO+File.separator+vo_num+File.separator+ imageFileNameList.get(count));
-			   		oldFile.delete();
-			   		count++;
-				}
-				}
-			
 				
 				if(imageFileList != null && imageFileList.size()!=0) {
 				for(ImageVO imageVO : imageFileList) { //박지성,나니가 32번으로 옮겨갔다
+					
+					if(imageVO.getImageFileName() != null) {
 					imageFileName = imageVO.getImageFileName();
+					
+					// 새로운 이미지를 temp에 저장
 					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName); //temp 폴더에 파일 저장.
+					
 					//일단 글번호로 옮겨간것 팩트
 					File destDir = new File(ARTICLE_IMAGE_REPO+File.separator+vo_num); 
 					destDir.mkdirs();
 					FileUtils.moveFileToDirectory(srcFile, destDir,true);
-			   		
+					
+					// 기존 파일 삭제
+					File oldFile = new File(ARTICLE_IMAGE_REPO+File.separator+vo_num+File.separator+ imageVO.getOriginImageFileName());
+			   		oldFile.delete();
+			   		count++;
+				}
 				
 				}
+				
 				}
 			
 				
@@ -1067,25 +1090,7 @@ public class BoardController {
 		}
 		return fileList;
 	}
-	
-	
-	/*
-	 * //다중 이미지 private List<String> upload2(MultipartHttpServletRequest
-	 * multipartRequest) throws Exception{ List<String> fileList= new
-	 * ArrayList<String>(); Iterator<String> fileNames =
-	 * multipartRequest.getFileNames(); while(fileNames.hasNext()){ String fileName
-	 * = fileNames.next(); MultipartFile mFile = multipartRequest.getFile(fileName);
-	 * String originalFileName=mFile.getOriginalFilename();
-	 * fileList.add(originalFileName); File file = new File(ARTICLE_IMAGE_REPO
-	 * +"\\"+"temp"+"\\" + fileName); if(mFile.getSize()!=0){ //File Null Check
-	 * if(!file.exists()){ //��λ� ������ �������� ���� ���
-	 * file.getParentFile().mkdirs(); //��ο� �ش��ϴ� ���丮���� ����
-	 * mFile.transferTo(new File(ARTICLE_IMAGE_REPO
-	 * +"\\"+"temp"+ "\\"+originalFileName)); //�ӽ÷� ����� multipartFile�� ����
-	 * ���Ϸ� ���� } } } return fileList; }
-	 * 
-	 */
-	
+		
 
 //	//게시글 DB등록 요청 --> write.jsp에서 name값이 전달 된다. post요청
 //	@PostMapping("/write.do")

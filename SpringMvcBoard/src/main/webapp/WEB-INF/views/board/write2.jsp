@@ -309,7 +309,7 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 				<!-- 
 					 <td> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
 							  </tr>
-							  <tr>
+							  <tr>http://localhost:8181/board/write3?page=1&boardNo=
 			                <td><img  id="preview" src="#"/></td>
 				
 				 -->
