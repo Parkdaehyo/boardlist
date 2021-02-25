@@ -195,7 +195,7 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 
 
  					<!--  form role == 부트스트랩 -->
- 					<form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write3" enctype="multipart/form-data">
+ 					<form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write4" enctype="multipart/form-data">
  
 					<!--  위치를 자동으로 고정하고있음
 					<colgroup>
@@ -223,7 +223,7 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						 <c:if test="${A == 1}">
 						<input type="hidden" id="ABC" name="boardNo" value="${boardNo}" />
 						</c:if>
-						<c:if test="${A == 2}">
+							  	<c:if test="${A == 2}">
 						<input type="hidden" id="DEF" name="boardNo" value="${article.boardNo}"/>	
 						</c:if>
 					
@@ -335,9 +335,9 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 			                <td scope="row" width=30><img id="preview" src="#"  width=200 height=200/></td>
 							  </tr> -->
 		
-							<input type="hidden" id="A" name="aaa" value="${A}" />
+							<input type="hidden" id="A" value="${A}" />
 			
-						</c:otherwise>
+			</c:otherwise>
 					
 		<%-- 				
 						<tr>
@@ -491,20 +491,10 @@ $(function() {
 	$("#list-btn2").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
-		location.href='/board/list3?page=${p.page}' 
+		location.href='/board/list2?page=${p.page}' 
 			+ '&countPerPage=${p.countPerPage}';	
 		
 	});
-	
-	
-	//파일 추가를 클릭시
-	$("#file_route").click(function() {
-			
-		//model로 전달된 value값을 1로 변경한 후에 board/write3으로 보냄
-		  $("#A").val("1"); 
-
-	});
-	
 	
 	
 	$(document).ready(function() {
@@ -544,25 +534,24 @@ $(function() {
 		if(A == 1) {
 			
 			
-			document.articleForm.action = "${contextPath}/board/write3"
+			document.articleForm.action = "${contextPath}/board/write4"
 			document.articleForm.submit();
 			
 		} else {
 		
 			const formElement = $("#formObj"); 
 			
-			formElement.attr("action" , "/board/modify3");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+			formElement.attr("action" , "/board/modify4");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 			formElement.attr("method", "post"); 
 			formElement.submit();
 		}
-
 		
+	});
 	
 		console.log("저장 버튼이 클릭됨");
 		
 	});
 	
-	});
 	
 	
 	

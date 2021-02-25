@@ -140,20 +140,6 @@ WHERE board_no = #{boardNo}
 
 
 
-
-
-
-
-
-
-
-
-		
-		
-		
-		
-		
-		
 		
 			<!--  이미지 파일을 보여주는 조회문 -->
 	<select id="selectImageFileList" resultMap="imgResult" parameterType="int">

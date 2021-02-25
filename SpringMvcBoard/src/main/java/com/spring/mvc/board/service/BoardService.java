@@ -537,6 +537,12 @@ public class BoardService implements IBoardService {
 	
 		return mapper3.selectImageFileNO(articleNO);
 	}
+
+	@Override
+	public int addNewArticle3(Map articleMap, HttpServletRequest request) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 	

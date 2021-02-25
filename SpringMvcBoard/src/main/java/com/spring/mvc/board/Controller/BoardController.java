@@ -33,9 +33,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spring.mvc.board.model.BoardVO;
+import com.spring.mvc.board.model.BoardVO_forth;
 import com.spring.mvc.board.model.BoardVO_third;
 import com.spring.mvc.board.model.BoardVO_two;
 import com.spring.mvc.board.model.ImageVO;
+import com.spring.mvc.board.model.ImageVO2;
+import com.spring.mvc.board.service.BoardService_comment;
 import com.spring.mvc.board.service.IBoardService;
 import com.spring.mvc.commons.PageCreator;
 import com.spring.mvc.commons.PageVO;
@@ -51,6 +54,403 @@ public class BoardController {
 
 	@Inject
 	private IBoardService service;
+	
+	@Inject
+	private BoardService_comment service4;
+	
+	
+	@GetMapping("/list4")
+	public String list4(SearchVO search, Model model, @ModelAttribute("p") SearchVO paging) { // list.jsp에서 페이징 정보를 가져와서
+																								// p로 뿌려준다.
+
+		// List<BoardVO> list = service.getArticleList();
+
+		// System.out.println("URL: /board/list GET -> result: " + list.size());
+
+		PageCreator pc = new PageCreator(); // PageVO의 객체와, 페이징 알고리즘을 실행하는 로직의 객체를 생성
+		pc.setPaging(search);
+
+		List<BoardVO_forth> list = service4.getArticleList_commentboard(search);
+		pc.setArticleTotalCount(service4.countArticles_commentboard(search));
+		List<ImageVO2> imageFileList = service4.selectImageFileList3_commentboard();
+		
+		
+
+		model.addAttribute("articles", list);
+		model.addAttribute("pc", pc);
+		model.addAttribute("imageFileList", imageFileList);
+		// model로 page 전해주고 있다.
+
+		return "board/list4";
+	}
+
+	// @PathVariable를 사용하면 URL에서 파라미터를 보내서 사용 할 수 있다.
+	// url path 로 들어오는 값을 해석 그대로 변수로 사용하겠다는 의미이다. --> list3.jsp에서 제목을 눌렀을때 파라미터로
+	// boardNo가 전송되는데 아마 이것을 받을것이다.
+	@GetMapping("/content4/{boardNo}") // 20
+	public String content4(@PathVariable Integer boardNo, HttpSession session, Model model,
+			@ModelAttribute("p") SearchVO paging, HttpServletRequest request, HttpServletResponse response) {
+	
+		//지금 @PathVariable에서 boardNo를 읽어오고 있는 상황이기 때문에 그대로 쓰면된다. 추신: 원래는 ReqestParam으로 받을 수도 있다.
+		
+		
+		List<ImageVO2> imageFileList = service4.selectImageFileList_commentboard(boardNo);
+		BoardVO_forth vo = service4.getArticle_commentboard(boardNo, request, response);
+		
+		System.out.println("content3의 imageFileList" +  imageFileList);
+		
+		model.addAttribute("imageFileList" , imageFileList);
+		model.addAttribute("article", vo);
+		
+		return "board/content4";
+	}
+
+////////////////////////////첨부파일 write Get요청
+	@GetMapping("/write4")
+	public void write4(@RequestParam("page") int page, Model model, @ModelAttribute("p") SearchVO paging) { 
+																											
+		int boardNo = service4.selectNewArticleNO_commentboard();
+		
+		System.out.println("write3.jsp 글번호: " + boardNo + "번");
+		
+		model.addAttribute("boardNo" , boardNo);
+	
+		int a = 1;
+		model.addAttribute("A", a);
+	}
+
+//////////////////////////////첨부파일 write poast요청 //@RequestParam("boardNo") int
+////////////////////////////// boardNo
+
+	/*
+	 * @RequestBody: @RequestMapping에 의해서 POST 방식으로 전송된 HTTP 요청 데이터를 String 타입의 body
+	 * 파라미터로 전달된다.(수신) 그래서 해당 메서드의 리턴값을 HTTP 응답 데이터로 사용한다?
+	 * 
+	 */
+
+	@PostMapping("/write4")
+	@ResponseBody
+	public ResponseEntity write4(BoardVO_forth article, RedirectAttributes ra, SearchVO searchvo,
+			MultipartHttpServletRequest multipartRequest, HttpServletResponse response) throws Exception {
+
+		String imageFileName=null;
+		
+		Map articleMap = new HashMap();
+		Enumeration enu=multipartRequest.getParameterNames();
+		while(enu.hasMoreElements()){
+			String name=(String)enu.nextElement();
+			String value=multipartRequest.getParameter(name);
+			articleMap.put(name,value); //boardNo도 넘어온다.
+		}
+		 String boardNo_map = (String) articleMap.get("boardNo"); //여기도 articleMap에서 넘어온 boardNo와 같은 boardNo를 반환한다
+		 System.out.println("post write3의 boardno" + boardNo_map +"번");
+		List<String> fileList =multiupload(multipartRequest); //업로드 메서드를 호출해야 비로소 첨부파일이 fileList에 담기기 시작한다.
+		List<ImageVO2> imageFileList = new ArrayList<ImageVO2>();
+		if(fileList!= null && fileList.size()!=0) {
+			for(String fileName : fileList) { //,파일 이름에들어오고
+				ImageVO2 imageVO = new ImageVO2(); //판다.jpg
+				
+					imageVO.setImageFileName(fileName);
+					imageFileList.add(imageVO);
+				
+			}
+		
+			articleMap.put("imageFileList", imageFileList);
+			articleMap.put("boardNo", boardNo_map);
+			
+		}
+		String message;
+		ResponseEntity resEnt=null;
+		HttpHeaders responseHeaders = new HttpHeaders();
+	    responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+		try {
+			int articleNO = service4.addNewArticle_commentboard(articleMap); //글쓰기
+			if(imageFileList!=null && imageFileList.size()!=0) { // imageFileList에 데이터가 있다면
+				for(ImageVO2  imageVO:imageFileList) {
+					imageFileName = imageVO.getImageFileName(); 
+					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName); //temp 폴더에 위치한 imageFile 들을 경로 셋팅.
+					File destDir = new File(ARTICLE_IMAGE_REPO+File.separator+boardNo_map);
+					destDir.mkdirs();
+					FileUtils.moveFileToDirectory(srcFile, destDir,true); // moveFileToDirectory: 글번호 폴더로 폴더를 이동시킨다.
+				}
+			}
+			    
+			message = "<script>";
+			message += " alert('등록 되었습니다.');";
+			System.out.println("여기타는가?");
+			message += " location.href='"+multipartRequest.getContextPath()+"/board/list4';"; // 등록이 된 이후에 이동될 URL을 message에 담았다.
+			message +=" </script>";
+		    resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED); //message를 ResponseEntity(반응 독립체) 객체에 
+		    
+			 
+		}catch(Exception e) { //예외가 발생했을 경우
+			if(imageFileList!=null && imageFileList.size()!=0) {
+			  for(ImageVO2  imageVO:imageFileList) {
+			  	imageFileName = imageVO.getImageFileName();
+				File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName);
+			 	srcFile.delete(); //예외 발생시 temo로 이동된 이미지파일들을 삭제 시켜준다. 만일 하지 않았을 경우에 이미지파일들이 계속 temp폴더 안에 쌓일 것이다.
+			  }
+			}
+			
+			message = " <script>";
+			message += " alert('글이 등록 되었습니다.');";
+			System.out.println("여기타는가2?");
+			message += " location.href='"+multipartRequest.getContextPath()+"/board/list4';";
+			message +=" </script>";
+			resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED);
+			e.printStackTrace();
+		}
+
+		return resEnt;
+	  }
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	@GetMapping("/modify4") // 여기까지 글번호가 어떻게 전달되는거지? -->input type hidden으로 boardNo가 보내졌다.
+	public String modify4(Integer boardNo, Model model, @ModelAttribute("p") PageVO paging, HttpServletRequest request,
+			HttpServletResponse response, SearchVO search) {
+
+		
+		//수정요청 진입시에 breakpoint 걸어버리면 수정화면 요청시에 멈춘다.
+		BoardVO_forth vo = service4.getArticle_commentboard(boardNo, request, response);
+		List<ImageVO2> imageFileList = service4.selectImageFileList_commentboard(boardNo);		
+		
+		System.out.println("수정 요청 진입시 vo" + vo);
+		System.out.println("Result Data: " + vo);
+		model.addAttribute("article", vo);
+		model.addAttribute("imageFileList", imageFileList);
+		
+		// model.addAttribute("pc",pc);
+
+		int b = 2;
+		model.addAttribute("A", b);
+	
+		
+
+		return "board/write4";
+	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 다중첨부파일 수정
+	@PostMapping("/modify4")
+	@ResponseBody
+	public ResponseEntity modify4(BoardVO_third article, RedirectAttributes ra, SearchVO searchvo,
+			MultipartHttpServletRequest multipartRequest, HttpServletResponse response ,  HttpServletRequest request) throws Exception {
+
+		   String imageFileName = null;
+		
+		  multipartRequest.setCharacterEncoding("utf-8");
+		  Map<String,Object> articleMap = new HashMap<String, Object>();
+		
+		  Enumeration enu=multipartRequest.getParameterNames();
+			while(enu.hasMoreElements()){
+				String name=(String)enu.nextElement();
+				String value=multipartRequest.getParameter(name);
+				//각종의 form 데이터 변수들이 getParameterNames()로 가져온 변수들이 모두 aritlceMap에 우선적으로 저장이된다.
+				articleMap.put(name,value); 
+			}
+			
+			int vo_num = article.getBoardNo();
+			
+			List<ImageVO2> imageFileNOList = service4.selectImageFileNO_commentboard(vo_num); 
+			
+			
+			Integer imgNum = service4.selectNewImageFileNO_commentboard();
+			
+			// origin file name list
+			String[] originFileNames = request.getParameterValues("originalFileName");
+			
+			
+			
+			List<String> fileList = multiupload(multipartRequest);
+			//길이에 상관없이 배열이 늘어난다.
+			List<ImageVO2> imageFileList = new ArrayList<ImageVO2>();
+			
+			if(fileList != null && fileList.size() != 0) {
+				
+				int i =0;
+				//fileList에서 하나씩 fileName에 담고있다.
+				for(String fileName : fileList) { 
+					
+					ImageVO2 imageVO = new ImageVO2();
+					//tiger가 한번 저장이 된 이후에 panda가 다시 셋팅되기 시작한다. 둘다 동시에 저장이 되는 것이 아니다.
+					imageVO.setImageFileName(fileName); 
+					imageVO.setBoardNo(vo_num);	
+					
+					if(imageFileNOList != null && imageFileNOList.size() !=0) {
+						
+						imageVO.setImageFileNO(imageFileNOList.get(i).getImageFileNO());
+					} else {
+						imageVO.setImageFileNO(imgNum);
+						
+					}
+					
+					
+							
+					if(originFileNames != null) {
+					imageVO.setOriginImageFileName(originFileNames[i]);	
+					}
+					
+					imageFileList.add(imageVO);
+					i++;
+				}
+			}
+			articleMap.put("boardNo_map2" , vo_num);
+			
+			//articleMap에서 KEY값 imageFileList를 저장
+			articleMap.put("imageFileList", imageFileList); 
+			
+			String message;
+			ResponseEntity resEnt=null;
+			HttpHeaders responseHeaders = new HttpHeaders();
+			
+			responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+			
+			
+		try {
+			
+			service4.updateArticle_commentboard(articleMap);
+			
+			
+			int count = 0;
+			
+				
+				if(imageFileList != null && imageFileList.size()!=0) {
+				for(ImageVO2 imageVO : imageFileList) { //박지성,나니가 32번으로 옮겨갔다
+					
+					if(imageVO.getImageFileName() != null) {
+					imageFileName = imageVO.getImageFileName();
+					
+					// 새로운 이미지를 temp에 저장
+					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName); //temp 폴더에 파일 저장.
+					
+					//일단 글번호로 옮겨간것 팩트
+					File destDir = new File(ARTICLE_IMAGE_REPO+File.separator+vo_num); 
+					destDir.mkdirs();
+					FileUtils.moveFileToDirectory(srcFile, destDir,true);
+					
+					// 기존 파일 삭제
+					File oldFile = new File(ARTICLE_IMAGE_REPO+File.separator+vo_num+File.separator+ imageVO.getOriginImageFileName());
+			   		oldFile.delete();
+			   		count++;
+				}
+				
+				}
+				
+				}
+			
+				
+				
+			message = "<script>";
+			message += " alert('등록 되었습니다.');";
+			System.out.println("수정 성공시..");
+			message += " location.href='"+multipartRequest.getContextPath()+"/board/list4';"; // 등록이 된 이후에 이동될 URL을 message에 담았다.
+			message +=" </script>";
+
+			resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED); //message를 ResponseEntity(반응 독립체) 객체에 
+		
+		    
+		    
+			
+		    
+		} catch(Exception e) {
+			if(imageFileList != null && imageFileList.size()!=0) {
+				
+				for(ImageVO2 imageVO : imageFileList) {
+					imageFileName = imageVO.getImageFileName();
+					File srcFile = new File(ARTICLE_IMAGE_REPO+File.separator+"temp"+File.separator+imageFileName);
+					srcFile.delete();
+				}
+			}
+			
+			message = " <script>";
+			message += " alert('글이 등록 되었습니다.');";
+			System.out.println("수정 실패시..");
+			message += " location.href='"+multipartRequest.getContextPath()+"/board/list4';";
+			message +=" </script>";
+			resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED);
+			e.printStackTrace();
+		}
+		return resEnt;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	@PostMapping("/delete4")
+	public String remove4(Integer boardNo, PageVO paging, RedirectAttributes ra) {
+
+		// System.out.println("URL: /board/delete => POST");
+		// System.out.println("parameter(글번호): " + boardNo);
+		service4.delete_commentboard(boardNo);
+		ra.addFlashAttribute("msg", "delSuccess").addAttribute("page", paging.getPage()).addAttribute("countPerPage",
+				paging.getCountPerPage());
+
+		return "redirect:/board/list4";
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 다중 첨부파일 게시판
@@ -128,9 +528,26 @@ public class BoardController {
 	@PostMapping("/write3")
 	@ResponseBody
 	public ResponseEntity write3(BoardVO_third article, RedirectAttributes ra, SearchVO searchvo,
-			MultipartHttpServletRequest multipartRequest, HttpServletResponse response) throws Exception {
+			MultipartHttpServletRequest multipartRequest, HttpServletResponse response, HttpServletRequest request) throws Exception {
 
+		//대박....
 		String imageFileName=null;
+	
+		 article.getBoardNo();
+		 
+		 System.out.println("post write3의 boardno" + 	article.getBoardNo() +"번");
+		
+		 //aaa에 1이 들어왔다. 이 말즉슨 request.getParmeter는 해당 name값을 읽어서 value값을 가져온다는 것.
+		 String aaa = request.getParameter("aaa");
+		 	int num	=  Integer.parseInt(aaa);
+		 
+		 	if(num == 1) {
+		 		
+		 		service.delete3(article.getBoardNo());
+		 	}
+		 
+
+		
 		
 		Map articleMap = new HashMap();
 		Enumeration enu=multipartRequest.getParameterNames();
@@ -139,9 +556,11 @@ public class BoardController {
 			String value=multipartRequest.getParameter(name);
 			articleMap.put(name,value); //boardNo도 넘어온다.
 		}
-		 String boardNo_map = (String) articleMap.get("boardNo"); //여기도 articleMap에서 넘어온 boardNo와 같은 boardNo를 반환한다
-		 System.out.println("post write3의 boardno" + boardNo_map +"번");
-		List<String> fileList =multiupload(multipartRequest); //업로드 메서드를 호출해야 비로소 첨부파일이 fileList에 담기기 시작한다.
+		
+		String boardNo_map = (String) articleMap.get("boardNo");
+		
+		 
+		 List<String> fileList =multiupload(multipartRequest); //업로드 메서드를 호출해야 비로소 첨부파일이 fileList에 담기기 시작한다.
 		List<ImageVO> imageFileList = new ArrayList<ImageVO>();
 		if(fileList!= null && fileList.size()!=0) {
 			for(String fileName : fileList) { //,파일 이름에들어오고

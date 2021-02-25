@@ -120,6 +120,7 @@ public interface IBoardService {
 			Integer countArticles2(SearchVO search);
 			
 			Integer viewCount2(int num);
+			int addNewArticle3(Map articleMap, HttpServletRequest request) throws Exception;
 			
 			
 			

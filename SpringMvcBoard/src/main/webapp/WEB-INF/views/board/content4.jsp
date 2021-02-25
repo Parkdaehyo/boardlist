@@ -21,6 +21,8 @@
 <script>
 
 
+
+
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -225,9 +227,10 @@ width: 150px
 			   <!--   <c:out value="${aa}" /> -->	
 			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
 			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200" /><br>
-		
-					
-					 
+			    	 <%--    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
+			   
+			   
+			   		 
 			  <div style="position: absolute; left: 1050px;">
 				<form method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}">
 
@@ -235,9 +238,9 @@ width: 150px
 				<input type="submit" value="이미지 다운로드" />	
 				</form>
 				</div>	
-					
-								   
-			    	 <%--    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
+			   
+			   
+			   
 			   </td>   
 			  </tr>  
 			  <tr>
@@ -249,8 +252,6 @@ width: 150px
 			 <!--  추가 -->
 			 <c:set var="count" value="${count +1 }" />
 			 <c:out value="${count }" />
-		
-			 
 			 
 		</c:forEach>
 		</c:if>
@@ -270,7 +271,7 @@ width: 150px
 
 
 
- <form id="formObj" action="<c:url value='/board/delete3'/>" method="post">  
+ <form id="formObj" action="<c:url value='/board/delete4'/>" method="post">  
 
    		  <input type="hidden" name="boardNo" value="${article.boardNo}">
           <input type="hidden" name="page" value="${p.page}">
@@ -288,23 +289,28 @@ width: 150px
 
 </form>
 
-<c:forEach var="image" items="${imageFileList}" varStatus="status">
+<%-- <c:forEach var="image" items="${imageFileList}" varStatus="status">
 <c:if test="${not empty image.imageFileName}">
 		
-<%-- <div style="position: absolute; left: 850px;">
+<div style="position: absolute; left: 850px;">
 <form method="post" action="${contextPath}/download.do?boardNo=${image.boardNo}&imageFileName=${image.imageFileName}">
 
 
 <input type="submit" value="이미지 다운로드" />	
 </form>
-</div> --%>
+</div>
 </c:if>	
 
 </c:forEach>
+	 --%>
 
 
 
-	
+
+<jsp:include page="../detail.jsp" /> 
+
+
+
 
 
 <!--  컨트롤러의 패키지의 위치는 상관없이 매핑명이 download.do이므로 다운로드가 가능합니다. 패키지의 위치는 상관없습니다 -->
@@ -333,7 +339,7 @@ $(function() {
 	$("#list-btn").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
-		location.href='/board/list3?page=${p.page}' 
+		location.href='/board/list4?page=${p.page}' 
 				+ '&countPerPage=${p.countPerPage}';		
 		
 	});
@@ -344,26 +350,10 @@ $(function() {
 	var modifyBtn = $("#modBtn");
 	modifyBtn.click(function() { //클릭 했을때 생성되는 이벤트 처리
 		console.log("수정 버튼이 클릭됨!");
-		formElement.attr("action" , "/board/modify3");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
+		formElement.attr("action" , "/board/modify4");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
 		formElement.attr("method", "get"); 
 		formElement.submit();
 	});
-	
-	  var count = 0;
-	  
-	  //.class로 접근하면 차례대로 변한다.
-	  $(".selectimage").click(function() {
-		    
-		  //alert('');
-		  
-		  $('#i_imageFileName').attr(
-				  "name" , "file" + count++
-				);
-	  
-	 	  
-  }); 	
-  
-	
 	
 
 	

@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+
+
+<!-- content.jsp에서 삽입된 파일 -->
+<layoutTag:layout>
+<br>
+<br>
+ 
+<div align="center" class="container">
+    <div class="col-xs-12" style="margin:15px auto;">
+        <label style="font-size:20px;"><span class="glyphicon glyphicon-list-alt"></span>댓글</label>
+    </div>
+ 
+ 
+    <!--                     추가                         -->
+    <!--  댓글  -->
+    <div align="center" class="container">
+        <!-- <label for="content">comment</label> -->
+        <form name="commentInsertForm">
+            <div class="input-group">
+               <input type="hidden" name="bno" value="${article.boardNo}"/>
+               <input type="text" class="form-control" id="writer2" name="writer" placeholder="작성자: ">
+               <input type="text" class="form-control" id="content2" name="content" placeholder="내용을 입력하세요.">
+               <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" name="commentInsertBtn">댓글저장</button>
+               </span>
+              </div>
+        </form>
+    </div>
+    
+    <div class="container">
+        <div class="commentList"></div>
+    </div>
+</div>
+ 
+<!--                     추가                         -->
+<%@ include file="commentS.jsp" %>
+</layoutTag:layout>
+
+<script>
+
+
+$(document).ready(function() {
+
+	$(".commentRegDate").datepicker({
+
+	dateFormat: 'yy-mm-dd'
+
+	});
+
+
+	$("#advert_end").datepicker({
+
+	dateFormat: 'yy-mm-dd'
+
+	});
+
+	});
+
+
+
+</script>

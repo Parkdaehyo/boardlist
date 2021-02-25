@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
-    <mapper namespace="com.spring.mvc.board.repository.third_IBoardMapper">
+    <mapper namespace="com.spring.mvc.board.repository.forth_IBoardMapper">
     
-    	<resultMap id="BoardMap" type="com.spring.mvc.board.model.BoardVO_third">
+    	<resultMap id="BoardMap" type="com.spring.mvc.board.model.BoardVO_forth">
 		
 		<id property="boardNo" column="board_no"/>
 		<result property="title" column="title"/>
@@ -17,7 +17,7 @@
 		</resultMap>
 		
 		
-		<resultMap id="imgResult" type="com.spring.mvc.board.model.ImageVO">
+		<resultMap id="imgResult" type="com.spring.mvc.board.model.ImageVO2">
 		<result property="imageFileNO" column="imageFileNO" />
 		<result property="boardNo" column="board_no" />
 		<result property="imageFileName" column="imageFileName" />
@@ -26,32 +26,32 @@
 		
 		
 		<!-- third_mapper에서 void 타입이고 리턴할 필요가 없으니 resultMap은 적어 주지 않는다. -->
-		  <insert id="insert3">
-		INSERT INTO new_board3
+		  <insert id="insert4">
+		INSERT INTO new_board4
 		  (title, content, writer, imageFileName1, imageFileName2, imageFileName3)
 		VALUES (#{title}, #{content}, #{writer}, #{imageFileName1}, #{imageFileName2}, #{imageFileName3})
 		</insert>
 	
 		
 		
-		<select id="selectNewArticleNO3" resultType="int">
+		<select id="selectNewArticleNO_commentboard" resultType="int">
 		<![CDATA[
-			SELECT  IFNULL(MAX(board_no), 0) + 1 from new_board3		
+			SELECT  IFNULL(MAX(board_no), 0) + 1 from new_board4		
 		]]>
 	</select>
 	
 
-  <insert id="insertNewArticle3" parameterType="java.util.Map"> 
-	 <![CDATA[ insert into new_board3(board_no,title, writer, content, imageFileName) 
+  <insert id="insertNewArticle_commentboard" parameterType="java.util.Map"> 
+	 <![CDATA[ insert into new_board4(board_no,title, writer, content, imageFileName) 
 	 values(#{boardNo}, #{title}, #{writer}, #{content}, null) 
 	 ]]> 
 	</insert>
 	
 	
 		<!--  이미지 들어가는곳 -->
-	<insert id="insertNewImage3" parameterType="java.util.Map"> 
+	<insert id="insertNewImage_commentboard" parameterType="java.util.Map"> 
 
-	insert into t_imageFile(
+	insert into t_imageFile2(
 	
 	imageFileNO,
 	imageFileName,
@@ -75,16 +75,16 @@
 	
 	
 
-	<update id="updateArticle3" parameterType="java.util.Map">
-		update new_board3
+	<update id="updateArticle_commentboard" parameterType="java.util.Map">
+		update new_board4
 		set title=#{title},
 		content=#{content}
 		where board_no=#{boardNo}
 	</update>
 	
 	
-	<update id="update3" parameterType="java.util.Map">
-	update new_board3
+	<update id="update_commentboard" parameterType="java.util.Map">
+	update new_board4
 	set title=#{title},
 	content =#{content}
 	where board_no=#{boardNo}
@@ -92,37 +92,37 @@
 	
 	
 
-<select id="getArticle3" resultMap="BoardMap">
+<select id="getArticle_commentboard" resultMap="BoardMap">
 
 SELECT *
-FROM new_board3
+FROM new_board4
 WHERE board_no =#{boardNo}
 
 </select>
 
 
-<select id="getArticleList3" resultMap="BoardMap">
+<select id="getArticleList_commentboard" resultMap="BoardMap">
 
 SELECT *
-FROM new_board3
+FROM new_board4
 ORDER BY board_no DESC
 LIMIT #{pageStart},#{countPerPage}
 </select>
 
 
-<select id="countArticles3" resultType="int"> <!-- countArticles가 Integer 타입이라 resultType이 int이다. -->
+<select id="countArticles_commentboard" resultType="int"> <!-- countArticles가 Integer 타입이라 resultType이 int이다. -->
 SELECT COUNT(*)
-FROM new_board3
+FROM new_board4
 </select>
 
-<update id="updateViewCnt3">
-		UPDATE new_board3
+<update id="updateViewCnt_commentboard">
+		UPDATE new_board4
 		SET view_cnt = view_cnt + 1 
 		WHERE board_no = #{boardNo}
 	</update>
 
-<delete id="delete3">
-DELETE FROM new_board3
+<delete id="delete_commentboard">
+DELETE FROM new_board4
 WHERE board_no = #{boardNo}
 
 </delete>
@@ -130,34 +130,30 @@ WHERE board_no = #{boardNo}
 
 
 
-<select id="selectNewImageFileNO3" resultType="int">
+<select id="selectNewImageFileNO_commentboard" resultType="int">
     <![CDATA[
-     SELECT IFNULL(MAX(imageFileNO) ,0) + 1 from t_imageFile;		
+     SELECT IFNULL(MAX(imageFileNO) ,0) + 1 from t_imageFile2;		
     ]]>
 </select>
-
-
-
-
-
 		
 			<!--  이미지 파일을 보여주는 조회문 -->
-	<select id="selectImageFileList" resultMap="imgResult" parameterType="int">
+	<select id="selectImageFileList_commentboard" resultMap="imgResult" parameterType="int">
     <![CDATA[
-      SELECT imageFileName from t_imageFile
+      SELECT imageFileName from t_imageFile2
       where board_no=#{boardNo}	
     ]]>
 	</select>
 	
-	<select id="selectImageFileList3" resultMap="imgResult">
+	<!--  imageFile2 전체조회 -->
+	<select id="selectImageFileList3_commentboard" resultMap="imgResult">
     <![CDATA[
-      SELECT * from t_imageFile
+      SELECT * from t_imageFile2
     ]]>
 	</select>
 		
 	
-	<update id="updateNewImage" parameterType="com.spring.mvc.board.model.ImageVO"> 
-			UPDATE t_imageFile  SET
+	<update id="updateNewImage_commentboard" parameterType="com.spring.mvc.board.model.ImageVO2"> 
+			UPDATE t_imageFile2  SET
 			
 		 <if test="imageFileName!='' and imageFileName!=null">
 		   		imageFileName=#{imageFileName}
@@ -168,9 +164,9 @@ WHERE board_no = #{boardNo}
 		</update>
 		
 		
-	<select id="selectImageFileNO" resultMap="imgResult" parameterType="int">
+	<select id="selectImageFileNO_commentboard" resultMap="imgResult" parameterType="int">
     <![CDATA[
-      SELECT imageFileNO from t_imageFile
+      SELECT imageFileNO from t_imageFile2
        where board_no=#{boardNo}	
     ]]>
 	</select>
