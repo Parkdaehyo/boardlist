@@ -27,7 +27,7 @@ public class CommentVO {
     }
  
     public String getContent() {
-        return content;
+        return content.replaceAll("(?i)<script", "&lt;script");
     }
  
     public void setContent(String content) {
@@ -35,7 +35,7 @@ public class CommentVO {
     }
  
     public String getWriter() {
-        return writer;
+        return writer.replaceAll("(?i)<script", "&lt;script");
     }
  
     public void setWriter(String writer) {

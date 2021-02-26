@@ -111,7 +111,7 @@ public class BoardController {
 																											
 		int boardNo = service4.selectNewArticleNO_commentboard();
 		
-		System.out.println("write3.jsp 글번호: " + boardNo + "번");
+		System.out.println("write4.jsp 글번호: " + boardNo + "번");
 		
 		model.addAttribute("boardNo" , boardNo);
 	
@@ -143,7 +143,7 @@ public class BoardController {
 			articleMap.put(name,value); //boardNo도 넘어온다.
 		}
 		 String boardNo_map = (String) articleMap.get("boardNo"); //여기도 articleMap에서 넘어온 boardNo와 같은 boardNo를 반환한다
-		 System.out.println("post write3의 boardno" + boardNo_map +"번");
+		 System.out.println("post write4의 boardno" + boardNo_map +"번");
 		List<String> fileList =multiupload(multipartRequest); //업로드 메서드를 호출해야 비로소 첨부파일이 fileList에 담기기 시작한다.
 		List<ImageVO2> imageFileList = new ArrayList<ImageVO2>();
 		if(fileList!= null && fileList.size()!=0) {
@@ -533,22 +533,6 @@ public class BoardController {
 		//대박....
 		String imageFileName=null;
 	
-		 article.getBoardNo();
-		 
-		 System.out.println("post write3의 boardno" + 	article.getBoardNo() +"번");
-		
-		 //aaa에 1이 들어왔다. 이 말즉슨 request.getParmeter는 해당 name값을 읽어서 value값을 가져온다는 것.
-		 String aaa = request.getParameter("aaa");
-		 	int num	=  Integer.parseInt(aaa);
-		 
-		 	if(num == 1) {
-		 		
-		 		service.delete3(article.getBoardNo());
-		 	}
-		 
-
-		
-		
 		Map articleMap = new HashMap();
 		Enumeration enu=multipartRequest.getParameterNames();
 		while(enu.hasMoreElements()){
@@ -1110,11 +1094,15 @@ public class BoardController {
 			@ModelAttribute("p") SearchVO paging, HttpServletRequest request, HttpServletResponse response) {
 		// System.out.println("URL: /board/content => GET");
 		// System.out.println("parameter(글번호): " + boardNo); //20
+		
 
 		String boardno2 = request.getParameter("boardNo");
 
 		// System.out.println("boardno2가 뭔데?" + boardno2);
 		ModelAndView view = new ModelAndView();
+		
+		
+		
 
 		// service.kepp
 
@@ -1222,7 +1210,7 @@ public class BoardController {
 			}
 
 			message = "<script>";
-			message += " alert('수정 되었습니다..');";
+			message += " alert('수정 되었습니다.');";
 			// message += "
 			// location.href='"+multipartRequest.getContextPath()+"/board/list2?page="+pageNo+"';";
 			message += " location.href='" + multipartRequest.getContextPath() + "/board/list2?page=" + pageNo + "';";
@@ -1234,7 +1222,7 @@ public class BoardController {
 
 			File srcFile = new File(ARTICLE_IMAGE_REPO + File.separator + "temp" + File.separator + imageFileName);
 			message = "<script>";
-			message += " alert('오류');";
+			message += " alert('수정 되었습니다.');";
 			message += " location.href='" + multipartRequest.getContextPath() + "/board/list2?boardNo=" + boardNo
 					+ "';";
 			message += " </script>";

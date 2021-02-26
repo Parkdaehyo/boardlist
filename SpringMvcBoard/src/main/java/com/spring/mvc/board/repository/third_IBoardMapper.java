@@ -42,7 +42,7 @@ public interface third_IBoardMapper {
 		
 		Integer viewCount3(int boardNo);
 		
-		Integer selectNewArticleNO3();
+		int selectNewArticleNO3();
 	
 		public int insertNewImage3(Map articleMap) throws DataAccessException;
 		

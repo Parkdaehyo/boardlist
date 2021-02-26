@@ -29,6 +29,7 @@
     <update id="commentUpdate" parameterType="com.spring.mvc.board.model.CommentVO">
         UPDATE comment
             SET
+            writer = #{writer},
             CONTENT = #{content}
         WHERE CNO = #{cno}
     </update>

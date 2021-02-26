@@ -470,14 +470,44 @@ public class BoardService implements IBoardService {
 	public int addNewArticle3(Map articleMap) throws Exception{
 		
 		
+		//새글 번호 가져왔어.
 		int boardNo = mapper3.selectNewArticleNO3();
-	
 		
+
 		System.out.println("등록시 boardNo" + boardNo);
 		
-		articleMap.put("boardNo" , boardNo); 
+		//articleMap.put("boardNo" , boardNo); 
+		
+		//이건 이미지글 번호 없는 글 수정할때 가져오는 번호
+		articleMap.get("boardNo");
+		
+		//이건 이미지글 번호 없는 글 수정할때 가져오는 번호
+		int boardNo_map = Integer.parseInt(articleMap.get("boardNo").toString());
+		
+		
 		
 		//왜 1이 리턴되는거지?
+		/*
+		 * 114번을 새로이 삭제하고 
+		 * 114번을 새로이 다시 입력하시오.
+		 * 
+		 */
+		//새글 번호랑 이건 이미지 없는 글번호 수정시 가져오는 번호가 맞지않을시
+		if( boardNo_map != boardNo) {
+			
+			//삭제
+			delete3(boardNo_map);
+			
+			//그리고 그 boardMap을 다시 넣고
+			articleMap.put("boardNo_map1",boardNo_map);
+			
+		} else {
+			
+			articleMap.put("boardNo", boardNo);
+		}
+		
+	
+		
 		int insertNewArticle3_boardNo = mapper3.insertNewArticle3(articleMap); //boardNo가 계속 1만 셋팅되고 있는상황
 		
 		System.out.println("반환된 글번호" + insertNewArticle3_boardNo);
@@ -490,7 +520,8 @@ public class BoardService implements IBoardService {
 		
 		
 		
-		int board_no = (int) articleMap.get("boardNo");
+		//int board_no = (int) articleMap.get("boardNo");
+		//int boardNo_map123 =(int)articleMap.get("boardNo_map1");
 		
 		
 		int imageFileNO = selectNewImageFileNO3(); //MAX값 가져오는것.
@@ -501,10 +532,24 @@ public class BoardService implements IBoardService {
 		 * }
 		 */
 		
+		int new_boardNo = Integer.parseInt(articleMap.get("boardNo").toString());
+		
 		
 		for(ImageVO imageVO : imageFileList){
 			imageVO.setImageFileNO(++imageFileNO);
-			imageVO.setBoardNo(board_no); 
+			
+			//이미지 글번호가 없는 글 수정할때 번호랑 새글 번호가 맞지 않을시
+			if(boardNo_map != boardNo) {
+				
+				imageVO.setBoardNo(boardNo_map); 
+				
+		  
+			}
+				//if문 안걸리면 그냥 하면되고.
+				
+				imageVO.setBoardNo(boardNo); 
+			
+			
 			System.out.println("파일 이름:" + imageVO.getImageFileName());
 		}
 				

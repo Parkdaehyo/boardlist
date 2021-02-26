@@ -47,10 +47,16 @@ public class CommentController {
     }
     
     @RequestMapping("/update") //댓글 수정  
-    private int mCommentServiceUpdateProc(@RequestParam int cno, @RequestParam String content) throws Exception{
+    private int mCommentServiceUpdateProc(@RequestParam int cno, @RequestParam String content, @RequestParam String writer) throws Exception{
         
         CommentVO comment = new CommentVO();
+        comment.setWriter(writer);
+        
+        System.out.println("comment/update의 writer" + writer);
+        
         comment.setCno(cno); //댓글 sequence
+        
+        
         comment.setContent(content);
         
         return mCommentService.commentUpdateService(comment);

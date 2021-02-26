@@ -222,29 +222,50 @@ width: 150px
 			     <input  type= "hidden" name="originalFileName" value="${item.imageFileName }" />	
 			     <!-- 추가 --> 
 			     <c:set var="aa" value="preview${count }"/>
-			   <!--   <c:out value="${aa}" /> -->	
-			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
+			
+			     
+			     
+			      <!-- 
+			      
+			      form id를 동적으로 줘야되나??
+			      근데 item에 들어가 있는 값이 모두 다른데??
+			      
+			      
+			       -->
+			      
+			      
+			      
+			      
+			      				     	     
 			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200" /><br>
-		
-					
-					 
-			  <div style="position: absolute; left: 1050px;">
-				<form method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}">
+				 <span id="imagedown">다운로드: ${item.imageFileName}</span> 
+								   
+			
+				<form  id="formimagedown" method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}">
 
 
-				<input type="submit" value="이미지 다운로드" />	
+				<input type="submit" value="이미지 다운로드" style="display:none" />	
 				</form>
-				</div>	
-					
+				
+				
+				<form  id="formimagedown2" method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}">
+
+
+				<input type="submit" value="이미지 다운로드" style="display:none" />	
+				</form>
+				
+				
+
+	
 								   
 			    	 <%--    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
 			   </td>   
 			  </tr>  
 			  <tr>
-			    <td>  
+			<%--     <td>  
 			    <!--  인자로  img 태그 id값도 보낸다. --> <!-- 여기선 imageFileName이 board_type의 역할을 한다. -->
 			       <input  class="selectimage" type="file"  name="imageFileName" id="i_imageFileName" disabled   onchange="readURL(this, '${aa}');"   />
-			    </td>
+			    </td> --%>
 			 </tr>
 			 <!--  추가 -->
 			 <c:set var="count" value="${count +1 }" />
@@ -255,13 +276,7 @@ width: 150px
 		</c:forEach>
 		</c:if>
 		
-		
-		 
-
-
-			
-			
-						
+	
 						</tbody>
 </table>
 
@@ -287,6 +302,17 @@ width: 150px
 </div>
 
 </form>
+
+
+		
+
+
+
+
+
+
+
+
 
 <c:forEach var="image" items="${imageFileList}" varStatus="status">
 <c:if test="${not empty image.imageFileName}">
@@ -328,6 +354,48 @@ width: 150px
 
 //제이쿼리 시작
 $(function() {
+	
+	
+	
+	
+	
+const formimagedown = $("#formimagedown");
+	
+	$("#imagedown").click(function() {
+		$("formimagedown").attr({
+			
+			"action" : "${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" 
+					
+		});
+		
+		formimagedown.submit();		
+		
+		
+	});
+	
+	
+	
+	const formimagedown2 = $("#formimagedown2");
+		
+		$("#imagedown").click(function() {
+			$("formimagedown").attr({
+				
+				"action" : "${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" 
+						
+			});
+			
+			formimagedown2.submit();		
+			
+			
+		});
+		
+		
+	
+	
+	
+	
+	
+	
 	
 	
 	$("#list-btn").click(function() {

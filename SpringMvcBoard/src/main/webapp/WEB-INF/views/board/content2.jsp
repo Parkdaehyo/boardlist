@@ -25,7 +25,8 @@ function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
-            $('#preview').attr('src', e.target.result);
+      
+           $('#preview').attr('src', e.target.result);
         }
         reader.readAsDataURL(input.files[0]);
     }
@@ -191,31 +192,39 @@ width: 150px
 							<%-- <td><input style="border:none" class="size2" type="text" id="i_title" name="writer" value="${article.writer}" readonly/></td>	 --%>					
 						</tr>
 						<tr>
-							<td scope="row" width=30 align
-							="center">내용</td>
+							<td scope="row" width=30 align="center">내용</td>
 							<td colspan="3"><textarea id="i_content" name="content" cols="90" rows="10" readonly>${article.content}</textarea></td>
 						</tr>
 						
 						
 						 <c:choose> 
-						 
+		
 	  <c:when test="${not empty article.imageFileName && article.imageFileName!='null' }">
+	  
 	   	<tr>
 		    <td width="150" align="center" bgcolor=""  rowspan="2">
-		      이미지
+		      첨부파일
 		   </td>
 		   <td>
 		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
-		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" id="preview" width="200"/><br>
+		     
+		     <!-- 
+		     src 특성은 필수이며, 포함하고자 하는 이미지로의 경로를 지정합니다.
+		     alt : 이미지의 텍스트 설명이며, 필수는 아니지만 스크린 리더가 alt의 값을 읽어 이미지를 설명하므로 접근성 차원에서 매우 유용합니다.
+		     
+		      -->
+		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" id="preview" width="200" /><br>
+	<%-- 	   <span onclick="download()">${article.imageFileName}</span> --%>
+	 		 <span id="imagedown">이미지 다운: ${article.imageFileName}</span> 
 		   </td>   
 		  </tr>  
-		  <tr>
+		
+	
+		 <%--     <img alt="${article.imageFileName}" onclick="javascript:location.href='http://www.naver.com';" /> --%>
+		<%--      <img alt="${article.imageFileName}" onclick="download();"> --%>
 		    
-		  <!--   <td>
-		       <input  type="file"  name="imageFileName " id="i_imageFileName"   disabled   onchange="readURL(this);"   />
-		    </td> -->
 		    
-		  </tr> 
+	
 		 </c:when>
 		 <c:otherwise>
 		    <tr  id="tr_file_upload" >
@@ -265,16 +274,27 @@ width: 150px
 
 <c:if test="${not empty article.imageFileName}">
 <div style="position: absolute; left: 850px;">
-<form method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}">
+
+<form id="formimagedown" method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}">
 
 
-<input type="submit" value="이미지 다운로드" />	
+
+<input type="submit"  style="background-color:transparent;  border:0px transparent solid; display:none"/>	
+
 </c:if>	
+
 </form>
 </div>
 </body>
 
 <script>
+
+
+//제이쿼리 안에다가 자바스크립트 함수 쓰니까 안됬지.
+function download() {
+	
+	
+}
 
 
 <%-- 		<input type="hidden" name="imageFileName" value="${article.imageFileName}" /> <br> --%>
@@ -304,7 +324,19 @@ $(function() {
 	});
 	
 
+	const formimagedown = $("#formimagedown");
 	
+	$("#imagedown").click(function() {
+		$("formimagedown").attr({
+			
+			"action" : "${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" 
+					
+		});
+		
+		formimagedown.submit();		
+		
+		
+	});
 	
 	
 	

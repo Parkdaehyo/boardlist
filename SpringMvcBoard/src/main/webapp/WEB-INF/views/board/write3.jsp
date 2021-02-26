@@ -604,28 +604,7 @@ $(function() {
 				
 				); 	
 	  
-			//var cnt = 1;
-			
-			/*   $(".selectimage").click(function() {
-				    
-				  $('#i_imageFileName').attr(
-						  "id" , "file" + count++
-			  });
-			
-			 */
-			
-			
-			
-			
-			
-			
-	  
-
-		 	//$("#i_imageFileName").attr('id', 'i_#imageFileName'+ count++);
-		 	
-		 	//   var active = document.getElementById("i_imageFileName");
-		 	 //  active.id = 'i_imageFileName' + count++;
-		 	  
+	
 	  }); 	
 	  
 	  

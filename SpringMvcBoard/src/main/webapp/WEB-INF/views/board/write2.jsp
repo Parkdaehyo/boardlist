@@ -262,6 +262,20 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 		 		<!--  이 코드는 파일선택이다. 파일 선택을 누르게 할 수있다. -->
 		    	<td scope="row"> 
 		    						<!--  이걸 imageFileName으로 바꿨다고 오류가 난다고?? -->
+		    						
+		    	
+		    	<!-- 
+		    	
+		    	
+		    	자바스크립트 onchange():
+		    	
+		    	select box를 열때 어떤 select박스를 선택했는지 알게 해준다.
+		    	
+		    	
+		    	
+		    	 -->
+		    	
+		    						
 		    	<input type="file" name="file" onchange="readURL(this);" /></td>
 		</td>
 		    	

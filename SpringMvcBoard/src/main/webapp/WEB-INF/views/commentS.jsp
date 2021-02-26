@@ -50,7 +50,7 @@ function commentList(){
             	//자바스크립트에서 html 구문 삽입시키기
        			a += '<br>';
                 a += '<div class="commentInfo'+value.cno+'">'+'작성자 : '+ value.writer; //댓글번호 : '+value.cno+' 
-                a += '<a style="color: blue;" onclick="commentUpdate('+value.cno+',\''+value.content+'\');"> 수정 </a>';
+                a += '<a style="color: blue;" onclick="commentUpdate('+value.cno+',\''+value.content+'\',\''+value.writer+'\');"> 수정 </a>';
                 a += '<a style="color: red;" onclick="commentDelete('+value.cno+');"> 삭제 </a> </div>';
                 a += '<div class="commentContent'+value.cno+'"> <p> 내용 : '+value.content +'</p>';
                 a += '<div class="commentRegDate'+value.cno+'"> <p> 작성시간 : '+ year +'-' + '0'+month + '-' + date; '</p>';
@@ -108,27 +108,52 @@ function commentInsert(insertData){
 
  
 //댓글 수정 - 댓글 내용 출력을 input 폼으로 변경 
-function commentUpdate(cno, content){ //29번 라인에 의해서 매개값을 받음.
+function commentUpdate(cno, content,writer){ //29번 라인에 의해서 매개값을 받음.
+	
+	console.log("수정시 작성자 이름: " + writer)
+	console.log("수정시 작성자 내용: " + content)
 	
     var a ='';
     
     a += '<div class="input-group">'; 
+    a += '<input type="text" class="form-control" name="writer_'+cno+'" value="'+writer+'"/>';
     a += '<input type="text" class="form-control" name="content_'+cno+'" value="'+content+'"/>';
+    																							//이 코드가 ajax와 통신하는 코드다.
     a += '<span class="input-group-btn"><button class="btn btn-default" type="button" onclick="commentUpdateProc('+cno+');">수정</button> </span>';
     a += '</div>';
     
+    //a태그 값들이 여기에 전송되는데 이건 내용인데?? 그러면..
+    		
+    //ajax 타고 돌아와서 여기에 추가됨.
     $('.commentContent'+cno).html(a);
+    //$('.commentInfo'+cno).html(a);
+
+    
     
 }
  
 //댓글 수정
+
+
+
+
 function commentUpdateProc(cno){
     var updateContent = $('[name=content_'+cno+']').val();
+    var writerContent = $('[name=writer_'+cno+']').val();
+    
+    //const??
+    
+    const all_data = { "content": updateContent, "cno": cno,
+    			    'writer' : writerContent, 'cno' : cno
+    				};
+			
     
     $.ajax({
         url : '/comment/update',
         type : 'post',
-        data : {'content' : updateContent, 'cno' : cno},
+        data : all_data,
+      
+    
         success : function(data){
             if(data == 1) commentList(bno); //댓글 수정후 목록 출력 
         }
