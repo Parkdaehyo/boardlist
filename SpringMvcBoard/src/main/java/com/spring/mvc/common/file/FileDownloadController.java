@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -21,9 +22,6 @@ public class FileDownloadController {				//"C:+File.separator+board+File.separat
 							@RequestParam("boardNo") String boardNo,
 			                 HttpServletResponse response)throws Exception {
 		
-		
-		
-		
 		OutputStream out = response.getOutputStream(); //출력할 Output stream을 얻는다.  
 	
 		
@@ -37,10 +35,20 @@ public class FileDownloadController {				//"C:+File.separator+board+File.separat
 		String downFile = ARTICLE_IMAGE_REPO + File.separator +boardNo+ File.separator+ imageFileName; 	//글 번호와 파일 이름으로 다운로드 할 파일 경로를 설정한다.
 		File file = new File(downFile); //다운로드 할 파일 객체를 생성한다.
 
+		
+		imageFileName = new String(imageFileName.getBytes("UTF-8"), "ISO-8859-1");
+		
 		response.setHeader("Cache-Control", "no-cache");
+		//response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(imageFileName, "utf-8") + ";");
+
+		
 		
 		//이미지 파일을 내려 받는데 필요한 response에 헤더정보를 설정합니다.
+		
 		response.addHeader("Content-disposition", "attachment; fileName=" + imageFileName); //파일을 받을 수 있도록 해주는 메서드?
+		
+		
+
 		
 		FileInputStream in = new FileInputStream(file);
 		

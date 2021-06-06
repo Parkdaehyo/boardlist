@@ -54,21 +54,13 @@ width: 150px
 
 }
 
-
-
-
-
-      
-            table, th, td  { border: 1px solid; }
-            th, td         { padding: 4px; }
-            /* Additional style */
-            thead tr       { background-color: #cccccc; }
-            td.center      { text-align: center; }
-            td.right       { text-align: right; }
+table, th, td  { border: 1px solid; }
+th, td         { padding: 4px; }
          
-
-
-
+thead tr       { background-color: #cccccc; }
+td.center      { text-align: center; }
+td.right       { text-align: right; }
+         
 
 .button {
 
@@ -101,7 +93,7 @@ width: 150px
 
   background-color: #969696;
   
-    border: none;
+  border: none;
 
   color: white;
 
@@ -123,42 +115,13 @@ width: 150px
   
 }
 
+.span_tag_removeimgclass {
 
+cursor:pointer;
 
-
-
-
-
-
+}
 </style>
 
-
-<script>
-
-<!-- 파일을 보이게 할 수 있도록 읽어주는 함수 -->
-
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-       	 
-       	 var count = 0;
-       //이게 각각의 파일선택이 어디에 업로드를 해줄지 위치를 찾아주는 역할을 한다
-       	 $('#i_imageFileName'+ count).attr('src', e.target.result); 
-       	 //$('#preview').attr('src', e.target.result);
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}  
-
-var cnt=1;
-function fn_addFile(){
-	  $("#d_file").append("<br>"+"<input type='file' name='file"+cnt+"' />");
-	  cnt++;
-}  
-
-</script>
- <!--      width: 100%;-->
 
 <body>
 
@@ -177,43 +140,16 @@ function fn_addFile(){
 
 <br>
 <br>
-
-
-
-
-
-
-
 <!-- 
-
 여백 지정
 margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
-
-
  -->
 
-
-
  					<!--  form role == 부트스트랩 -->
- 					<form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write3" enctype="multipart/form-data">
+ 					<form id= "formObj" name="articleForm" method="post"  action="${contextPath}/board/write3" enctype="multipart/form-data" accept-charset="UTF-8">
  
-					<!--  위치를 자동으로 고정하고있음
-					<colgroup>
-						<col style="width:12%;" /><col style="width:auto;" /><col style="width:12%;" /><col style="width:38%;" />
-					</colgroup>
-						 -->
 					<table align="center">
 						<tbody>
-						
-				<%-- 	   <c:forEach var="image" items="${imageFileList}"> 
-						 <input type="hidden" name="imageFileNO" value="${image.imageFileNO}" />
-						 <input type="hidden" name="imageFileNO1" value="${image.imageFileNO}" />
-						 <input type="hidden" name="imageFileNO2" value="${image.imageFileNO}" />
-						 	
-						 	 	 	 	 	 	 
-						</c:forEach>
-						 --%>
-							
 						<!--  이 페이지는 
 						
 						저장과 수정이 같은 한 화면이기 때문에
@@ -226,11 +162,7 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 						<c:if test="${A == 2}">
 						<input type="hidden" id="DEF" name="boardNo" value="${article.boardNo}"/>	
 						</c:if>
-					
-					
- 					<%-- 	 <input id="boardno" type="hidden" name="boardNo" value="${article.boardNo}" /> --%>
- 						 
- 						 
+				
  						 <!--  write.jsp에서 p객체가 넘어왔고 역시나 수정을 할때 페이지 객체정보가 넘어가기때문에
  						 
  						 /board/modify post요청에서 searchvo에서 조회문에 들어갔을때 저장된 페이지정보가
@@ -257,52 +189,55 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 							<td colspan="3" id=""><textarea id="content" name="content" cols="90" rows="10">${article.content}</textarea></td>
 						
 						</tr>
-						
-						
-						
+					
 					<c:choose>
 					
 					<c:when test="${not empty imageFileList && imageFileList!='null' }">
 					
-					
 					    <!-- 밖에다 써야함. -->
 			   <c:set var="count" value="0"/>
+	 	
+	 	
 	 		 <c:forEach var="item" items="${imageFileList}" varStatus="status" >
-	 		 <input id="imageFileNO"type="hidden" name="imageFileNO" value="${item.imageFileNO}"/>
+	 		 
+	 		 
+	 		 	 <input class="GUBUNCLASS" type="hidden" name="GUBUN" value="1">
+	 		 	 
+	 			 <input id="imageFileNO" type="hidden" name="imageFileNO" value="${item.imageFileNO}"/>
+	 			 
+	 			 <c:out value="${item.imageFileNO}"/> 
+	 			
 
 			    <td width="150" align="center" rowspan="2">
 			          이미지${status.count }
 			   </td>
 			   <td>
 			     <input id="original" type="hidden" name="originalFileName" value="${item.imageFileName}" />	
+			     
+			 <%--      <c:out value="${item.imageFileName}"/> --%>
 			     <!-- 추가 --> 
-			     <c:set var="aa" value="preview${count }"/>
+			     <c:set var="aa" value="preview${count}"/>
 			   <!--   <c:out value="${aa}" /> -->	
-			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
-			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200"/><br>
-			    	 <%--    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
+			     <!-- id="preview"에서 ${aa}로 바꿈 -->
+			     		     	     
+			    <p><img name="imgname" id="imageshow" class="imgtagclass" src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}"  width="200"
+			    style="display:visible"/>
+			    <span class="span_tag_removeimgclass">x</span></p>
+			    
+			   
 			   </td>   
 			  </tr>  
 			  
-			  
-
 			  <tr>
 			    
 			    <td>  
-			    
-			    <!--  인자로  img 태그 id값도 보낸다. --> 
-			       <input  class="selectimage" type="file"  name="file" id="i_imageFileName" onchange="readURL(this, '${aa}');"   />
+			    <!--  파일선택 -->
+			       <input class="selectimage" type="file"  name="file" id="i_imageFileName" onchange="readURL(this, '${aa}');" />
 			    </td>
 			 </tr>
 			 
-			 
-		
-			
-			
-			
 			 <!--  추가 -->
 			 <c:set var="count" value="${count +1 }" />
-			 <c:out value="${count }" />
 			 
 		</c:forEach>
 					</c:when>
@@ -338,135 +273,9 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 							<input type="hidden" id="A" name="aaa" value="${A}" />
 			
 						</c:otherwise>
-					
-		<%-- 				
-						<tr>
-						<td width=30 align="center">첨부파일</td>
-						
-						
-						<div class="file_input">
-						<td>
-						
-						 <input type="button" id="file_route" name="file_route" value="파일추가" onClick="fn_addFile()"/>
-					
-						</div>
-						</td>	
-						</tr>
-						
-						<tr>
-	      				<td colspan="4"><div id="d_file" name="All_file"></div></td>
-	      				
-	  					 </tr>
-	  					 
-	  					 	<input type="hidden" id="A" value="${A}" /> --%>
-					
-				
-					
-					
 					</c:choose>
-					
-					
-					
-					
-	<%-- 	 <c:if test="${not empty imageFileList && imageFileList!='null' }">
-                 <!-- 밖에다 써야함. -->
-			   <c:set var="count" value="0"/>
-	 		 <c:forEach var="item" items="${imageFileList}" varStatus="status" >
-	 		 <input id="imageFileNO"type="hidden" name="imageFileNO" value="${item.imageFileNO}"/>
-
-			    <td width="150" align="center" rowspan="2">
-			          이미지${status.count }
-			   </td>
-			   <td>
-			     <input id="original" type="hidden" name="originalFileName" value="${item.imageFileName}" />	
-			     <!-- 추가 --> 
-			     <c:set var="aa" value="preview${count }"/>
-			   <!--   <c:out value="${aa}" /> -->	
-			     <!-- id="preview"에서 ${aa}로 바꿈 -->				     	     
-			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200"/><br>
-			    	    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br>
-			   </td>   
-			  </tr>  
-			  
-			
-			  <tr>
-			    
-			    <td>  
-			    
-			    <!--  인자로  img 태그 id값도 보낸다. --> 
-			       <input  class="selectimage" type="file"  name="file" id="i_imageFileName" onchange="readURL(this, '${aa}');"   />
-			    </td>
-			 </tr>
-			 
-			 
-		
-			
-			
-			
-			 <!--  추가 -->
-			 <c:set var="count" value="${count +1 }" />
-			 <c:out value="${count }" />
-			 
-		</c:forEach>
-		</c:if>
-		 --%>
-					<!--  empty(null), ! empty(not null) -->
-					
-					<!--  일단 수정시에도 이게 추가되야 되는데 일단은 수정부터 되는지 확인해보고 잘되면 이 기능을 활성화 시킬 것이다. -->
-					
-					
-						
-	
-				
-						
-				<%-- 		<tr>
-						<td width=30 align="center">첨부파일</td>
-						
-						
-						<div class="file_input">
-						<td>
-						
-						 <input type="button" id="file_route" name="file_route" value="파일추가" onClick="fn_addFile()"/>
-					
-						</div>
-						</td>	
-						</tr>
-						
-						<tr>
-	      				<td colspan="4"><div id="d_file" name="All_file"></div></td>
-	  					 
-	  					<!--    <td><img  id="preview" src="#" width=200 /></td> -->
-	  					 </tr>
-	  					 
-					
-							<!-- <tr>  tr은 줄개행을 의미
-							  <td scope="row"> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
-			                <td scope="row" width=30><img id="preview" src="#"  width=200 height=200/></td>
-							  </tr> -->
-		
-							<input type="hidden" id="A" value="${A}" />
-							
-				
-							 --%>
-						
-						
-						
-						
 						</tbody>
-						
-						
-						
-						
-				
-				<!-- 
-					 <td> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
-							  </tr>
-							  <tr>
-			                <td><img  id="preview" src="#"/></td>
-				
-				 -->
-						
-</table>
+                    </table>
 
 						 
 
@@ -482,12 +291,71 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 
 <script>
 
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        	//alert('하하');
+       	 
+       	 var count = 0;
+       //이게 각각의 파일선택이 어디에 업로드를 해줄지 위치를 찾아주는 역할을 한다
+       	 $('#i_imageFileName'+ count).attr('src', e.target.result); 
+       	 //$('#preview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}  
+
+var cnt=1;
+function fn_addFile(){
+	  $("#d_file").append("<br>"+"<input type='file' name='file"+cnt+"' />");
+	  cnt++;
+}  
 
 //제이쿼리 시작
 $(function() {
 		
+	$(".span_tag_removeimgclass").click(function() {
+		
+		const imgtagclass = $('.imgtagclass');  
+		//$(this).siblings() == $(this)에서 가장 가까운 태그
+		//$(this)가 .span_tag_removeimgclass에서 실질적으로 선택된 객체를 가리킨다.
+		//그리고 $(this).siblings()은 그 선택된 객체들 중 가장 가까운 img태그를 가리킨다.
+	      //console.log($(this).siblings()) 
+	      alert('이미지삭제버튼 클릭됨!');
+		
+		//<input type="hidden" id="deleteImageList" />
+		//<input type="hidden" id="saveImageList" />
+		//var targetImageSrc = $(this).siblings().attr("src");
+		const AA = $(this).siblings().attr("style" , "display:none");
+		
+		var GUBUN = $('input[name=GUBUN]').val();
 	
-	
+		//console.log(GUBUN);
+		
+		if(AA) {
+			
+			 
+	     //var GUGU = document.getElementByClassName("GUBUN").value = "0";
+	     //var GUGUid = document.getElementById("GUBUN").value = "0";
+	     $('.GUBUNCLASS').val(0);
+	     //document.getElementsByClassName("GUBUN").value = "0";
+		
+	     //alert("GUGUclass");
+	     //console.log(GUGUid);
+	     
+	     //console.log(GUGUclass);
+		/* 	const arr = [forGUBUN, forGUBUN, forGUBUN]; 
+			for (const item of arr){
+				
+				console.log(item); // 10, 20, 30 출력 }
+
+		} */
+		}
+		
+	      
+	  });    
+	  
 	$("#list-btn2").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
@@ -552,7 +420,7 @@ $(function() {
 			const formElement = $("#formObj"); 
 			
 			formElement.attr("action" , "/board/modify3");//attr(속성 , 변경값 ) 태그의 내부 속성을 변경 , action 속성을 /board/modify로 변경
-			formElement.attr("method", "post"); 
+			formElement.attr("method", "post");
 			formElement.submit();
 		}
 
@@ -563,21 +431,6 @@ $(function() {
 	});
 	
 	});
-	
-	
-	
-	
-	
-	  //var count = 0;
-	
-	/*   $("#i_imageFileName").click(function() {
-		    
-		  $('#i_imageFileName').attr{(
-				'name' : 'file' + count++
-				
-				
-				
-		  }); */
 		  
 		  var count = 0;
 		  
@@ -586,25 +439,9 @@ $(function() {
 			    
 			  //alert('');
 			  
-			  $('#i_imageFileName').attr(
-					  "name" , "file" + count++
-					);
-		  
-		  
-				 
-			  $('#i_imageFileName').attr(
-					'id' , 'i_imageFileName' + count++
-					
-					); 		  
-		  
-		  
-			 
-		  	$('#imageFileNO').attr(
-				'name' , 'imageFileNO' + count++
-				
-				); 	
-	  
-	
+			$($(this)).attr("name" , "file" + count++);
+			$($(this)).attr('id' , 'i_imageFileName' + count++); 		  
+		  	$($(this)).attr('name' , 'imageFileNO' + count++); 	
 	  }); 	
 	  
 	  
@@ -615,19 +452,6 @@ $(function() {
 			
 			}); 	
 	  });
-
-	  
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 });
 
 </script>

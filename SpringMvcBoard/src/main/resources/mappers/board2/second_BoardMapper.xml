@@ -50,7 +50,8 @@
 	<update id="update2" parameterType="java.util.Map">
 	update new_board2
 	set title=#{title},
-	content =#{content}
+	content =#{content},
+	imageFileName=#{imageFileName}
 	where board_no=#{boardNo}
 	</update>
 	

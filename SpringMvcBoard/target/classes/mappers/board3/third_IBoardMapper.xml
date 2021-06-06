@@ -130,21 +130,30 @@ WHERE board_no = #{boardNo}
 
 
 
+<delete id="deleteImageFile" parameterType="int">
+<foreach item="item" collection="array" separator=" ">
+Delete imageFileName from t_imagefile
+WHERE imageFileNO = #{item}
+</foreach>
+</delete>
+
+
+
+
+
+
+
+
 <select id="selectNewImageFileNO3" resultType="int">
     <![CDATA[
      SELECT IFNULL(MAX(imageFileNO) ,0) + 1 from t_imageFile;		
     ]]>
 </select>
-
-
-
-
-
 		
 			<!--  이미지 파일을 보여주는 조회문 -->
 	<select id="selectImageFileList" resultMap="imgResult" parameterType="int">
     <![CDATA[
-      SELECT imageFileName from t_imageFile
+      SELECT * from t_imageFile
       where board_no=#{boardNo}	
     ]]>
 	</select>
@@ -157,16 +166,20 @@ WHERE board_no = #{boardNo}
 		
 	
 	<update id="updateNewImage" parameterType="com.spring.mvc.board.model.ImageVO"> 
-			UPDATE t_imageFile  SET
-			
-		 <if test="imageFileName!='' and imageFileName!=null">
-		   		imageFileName=#{imageFileName}
-		 	</if>
-		 	
-		 	where board_no=#{boardNo}
-		 	and  imageFileNO=#{imageFileNO}
-		</update>
-		
+         UPDATE t_imageFile  SET
+         <choose>
+         <when test="imageFileName != '' and imageFileName != null">
+               imageFileName=#{imageFileName}
+          </when>
+          <otherwise>
+          </otherwise>
+          </choose>
+          where board_no=#{boardNo}
+          and  imageFileNO=#{imageFileNO}
+      </update>
+
+
+
 		
 	<select id="selectImageFileNO" resultMap="imgResult" parameterType="int">
     <![CDATA[

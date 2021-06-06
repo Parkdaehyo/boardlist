@@ -84,7 +84,7 @@ pattern="yyyy-MM-dd"/></td>
 						>다음</a>
 				
 					</c:if>	
-				<a href="<c:url value='/board/write3?page=${p.page}&boardNo=${b.boardNo}'/>">등록</a> <!--  p태그를 하면 줄개행이 된다. -->
+				<a href="<c:url value='/board/write_and_modify3?page=${p.page}&boardNo=${b.boardNo}'/>">등록</a> <!--  p태그를 하면 줄개행이 된다. -->
 			
 	
 		<!--  다음 버튼 -->

@@ -256,7 +256,8 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 		   <td>
 		     <input  type="hidden"  name="file" id="i_imageFileName" value="${article.imageFileName }"   />
 		     <input  type= "hidden"   name="originalFileName" value="${article.imageFileName }" />
-		    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" width=200 id="preview"  /><br>
+		    <img id="realimgid" class="realimg" src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${article.imageFileName}" width=200 /><br>
+		      <span class="removeimgclass" id="removeimg">x</span></p>
 		   </td>   
 		  </tr>  
 		 		<!--  이 코드는 파일선택이다. 파일 선택을 누르게 할 수있다. -->
@@ -348,6 +349,18 @@ margin 5px 7px 3px 0px; (위, 오른쪽, 아래, 왼쪽 순)
 //제이쿼리 시작
 $(function() {
 		
+	
+	
+	
+	$("#removeimg").click(function() {
+		
+		alert('이미지삭제버튼 클릭됨!');
+		
+		$('.realimg').remove();
+		$('#realimgid').attr("src" , "null");
+		alert('여기 들어오냐?');
+		
+		});
 	
 	
 	$("#list-btn2").click(function() {

@@ -42,51 +42,10 @@ public class BoardService implements IBoardService {
 	@Override
 	public void insert(BoardVO article) {
 			
-		System.out.println("Debug "  + article.toString());
-		//System.out.println("Debug "  + mpRequest.getMultiFileMap().toString());
-		
+		System.out.println("Debug "  + article.toString());		
 				 mapper.insert(article);
-				 
-				 
-				 /*
-				 List<Map<String,Object>> list = fileUtils.parseInsertFileInfo(article, mpRequest); 
-					int size = list.size();
-					for(int i=0; i<size; i++){ 
-						list.get(i); 
-						mapper.insertFile(size);
-					}*/
-				 
-				 
-			}
-
-	/*
-	 * 		
-		Cookie[] getCookie = request.getCookies();
-	
-		//쿠키가 존재하는경우 
-		if(getCookie != null){ // 만약 쿠키가 없으면 쿠키 생성 , 쿠키값이 존재하면 조회수 증가가 되면 안된다. null이 아니란 얘기 == 쿠키값이 존재한다.
-
-			for(int i=0; i< getCookie.length; i++){
-
-			Cookie c = getCookie[i]; // 객체 생성
-
-			String name = c.getName(); // 쿠키 이름 가져오기
-
-			String value = c.getValue(); // 쿠키 값 가져오기
-
-			}
-		
-			return mapper.getArticle(boardNo);
-
-		} else {
-			
-			mapper.updateViewCnt(boardNo);
-			return mapper.getArticle(boardNo);
-			
-		}
-		
-	 * 
-	 */
+	}
+				
 	
 	@Override
 	public BoardVO getArticle(Integer boardNo, HttpServletRequest request, HttpServletResponse response) {
@@ -319,17 +278,13 @@ public class BoardService implements IBoardService {
 	
 	
 	
-	
-	
-	
-	
-
-	
 	@Override
 	public BoardVO_third getArticle3(Integer boardNo, HttpServletRequest request, HttpServletResponse response) {
 		
 		
-		   Cookie[] cookies = request.getCookies(); //모든 ㅋ
+		   Cookie[] cookies = request.getCookies(); 
+		   
+		   System.out.println("최초의 cookies: " + cookies);
 	        
 	        // 비교하기 위해 새로운 쿠키
 	        Cookie viewCookie = null;
@@ -356,13 +311,16 @@ public class BoardService implements IBoardService {
              
            
              // 쿠키 생성(이름, 값)
-             Cookie newCookie = new Cookie("cookie"+boardNo, "|" + boardNo + "|");
+             Cookie newCookie = new Cookie("cookie" + boardNo, "|" + boardNo + "|");
              newCookie.setMaxAge(300);
                              
+             
              // 쿠키 추가
              response.addCookie(newCookie); 
              
+             //조회수 업데이트문
      		mapper3.updateViewCnt3(boardNo);
+     		
      		return mapper3.getArticle3(boardNo);
      		
 	        } else { //viewCookie가 있다면 여기로 빠지는데
@@ -393,6 +351,12 @@ public class BoardService implements IBoardService {
 		mapper3.delete3(boardNo);
 		
 	}
+	
+	public void deleteImageFile(int[] imageFileNo) {
+		System.out.println(imageFileNo);
+		mapper3.deleteImageFile(imageFileNo);
+	}
+	
 
 	@Override
 	public void updateArticle3(Map articleMap) throws DataAccessException {
@@ -567,13 +531,13 @@ public class BoardService implements IBoardService {
 
 	@Override
 	public List <ImageVO>selectImageFileList(int articleNO) throws DataAccessException {
-		// TODO Auto-generated method stub
+	
 		return mapper3.selectImageFileList(articleNO);
 	}
 
 	@Override
 	public List selectImageFileList3() throws DataAccessException {
-		// TODO Auto-generated method stub
+	
 		return mapper3.selectImageFileList3();
 	}
 
@@ -585,7 +549,7 @@ public class BoardService implements IBoardService {
 
 	@Override
 	public int addNewArticle3(Map articleMap, HttpServletRequest request) throws Exception {
-		// TODO Auto-generated method stub
+	
 		return 0;
 	}
 	

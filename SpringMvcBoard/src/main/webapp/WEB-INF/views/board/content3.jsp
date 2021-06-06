@@ -156,6 +156,20 @@ width: 150px
 
 }
 
+.downlord {
+border:none;
+cursor:pointer;
+background-color:transparent;
+}
+
+.position {
+
+position: relative;
+left:1250px;
+
+}
+
+
 
  
 </style>
@@ -176,6 +190,8 @@ width: 150px
 </tr>
 </table>
 
+<br>
+<br>
 
 	<%-- <colgroup>
 						<col style="width:12%;" /><col style="width:auto;" /><col style="width:12%;" /><col style="width:38%;" />
@@ -212,7 +228,15 @@ width: 150px
 						
 		 <c:if test="${not empty imageFileList && imageFileList!='null' }">
                  <!-- 밖에다 써야함. -->
+                 
+                 
+                 
+                <div id="num">
 			   <c:set var="count" value="0"/>
+			   </div>
+			   
+			   
+			   
 	 		 <c:forEach var="item" items="${imageFileList}" varStatus="status" >
 		    <tr>
 			    <td width="150" align="center" rowspan="2">
@@ -222,41 +246,36 @@ width: 150px
 			     <input  type= "hidden" name="originalFileName" value="${item.imageFileName }" />	
 			     <!-- 추가 --> 
 			     <c:set var="aa" value="preview${count }"/>
-			
 			     
-			     
-			      <!-- 
-			      
-			      form id를 동적으로 줘야되나??
-			      근데 item에 들어가 있는 값이 모두 다른데??
-			      
-			      
-			       -->
-			      
-			      
-			      
-			      
-			      				     	     
-			    <img src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200" /><br>
-				 <span id="imagedown">다운로드: ${item.imageFileName}</span> 
-								   
+			      <input id="imageFileNO" type="hidden" name="imageFileNO" value="${item.imageFileNO}"/>
+	 			 
+	 		
+		
+				
+			  	<!-- 배열요소를 반복해서 처리할 수 있다? -->
+				 <c:forTokens var="ext" items="${item.imageFileName}" delims="." varStatus="status_token">  	     
+				
+				<!--  마지막 루프 -->							    
+				<c:if test="${status_token.last}">
+				<c:choose>
+				<c:when test="${ext eq 'txt'}">
+			    <img class="imageclass" src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="" width="200"  onerror="this.style.display='none';"/> 
+				</c:when>
+				<c:otherwise>
+			    <img class="imageclass2" src="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" id="${aa}" width="200"/> 
+				</c:otherwise>
+				</c:choose>
+				</c:if>
 			
-				<form  id="formimagedown" method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}">
+				</c:forTokens>
+				
+				
+				<form id="formimagedown" method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}">
 
-
-				<input type="submit" value="이미지 다운로드" style="display:none" />	
+			    다운로드:<input class="downlord" type="submit" value="${item.imageFileName}" />
 				</form>
 				
-				
-				<form  id="formimagedown2" method="post" action="${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}">
-
-
-				<input type="submit" value="이미지 다운로드" style="display:none" />	
-				</form>
-				
-				
-
-	
+					 <c:set var="count" value="${count +1 }" />
 								   
 			    	 <%--    <img src="${contextPath}/download.do?boardNo=${article.articleNO}&imageFileName=${item.imageFileName}" id="${aa}" /><br> --%>
 			   </td>   
@@ -267,23 +286,15 @@ width: 150px
 			       <input  class="selectimage" type="file"  name="imageFileName" id="i_imageFileName" disabled   onchange="readURL(this, '${aa}');"   />
 			    </td> --%>
 			 </tr>
-			 <!--  추가 -->
-			 <c:set var="count" value="${count +1 }" />
-			 <c:out value="${count }" />
-		
 			 
 			 
 		</c:forEach>
+	
 		</c:if>
 		
 	
 						</tbody>
 </table>
-
-
-
-
-
 
  <form id="formObj" action="<c:url value='/board/delete3'/>" method="post">  
 
@@ -294,74 +305,41 @@ width: 150px
 
 
 
-<div style="position: absolute; left: 1000px;">
+<div class="position">
     <input id="modBtn" class="update-button" type="button" value="수정" class="btn" id="">
     <input type="submit" class="button" value="삭제" id="" onclick="return confirm('정말로 삭제하시겠습니까?')">
     <input type="button" class="to-list" value="목록" class="btn" id="list-btn">
-
 </div>
 
 </form>
 
 
 		
-
-
-
-
-
-
-
-
-
 <c:forEach var="image" items="${imageFileList}" varStatus="status">
 <c:if test="${not empty image.imageFileName}">
 		
-<%-- <div style="position: absolute; left: 850px;">
-<form method="post" action="${contextPath}/download.do?boardNo=${image.boardNo}&imageFileName=${image.imageFileName}">
-
-
-<input type="submit" value="이미지 다운로드" />	
-</form>
-</div> --%>
 </c:if>	
 
 </c:forEach>
 
 
-
-	
-
-
-<!--  컨트롤러의 패키지의 위치는 상관없이 매핑명이 download.do이므로 다운로드가 가능합니다. 패키지의 위치는 상관없습니다 -->
-
-<%-- <c:if test="${not empty imageFileList.imageFileName}">
-<div style="position: absolute; left: 850px;">
-<form method="post" action="${contextPath}/download.do?boardNo=${imageFileList.boardNo}&imageFileName=${imageFileList.imageFileName}">
-
-
-<input type="submit" value="이미지 다운로드" />	
-</c:if>	
-</form>
-</div> --%>
 </body>
 
 <script>
 
 
-<%-- 		<input type="hidden" name="imageFileName" value="${article.imageFileName}" /> <br> --%>
-<%-- <input type="hidden" name="boardNo" value="${article.boardNo}" /> <br> --%>
-
 //제이쿼리 시작
 $(function() {
-	
-	
-	
-	
-	
+	//var count = 0;
+/* 	 var dd = $(".dd");
+	 
+	 var count = 2;
+
 const formimagedown = $("#formimagedown");
+const formimagedown2 = $(".fi");
 	
-	$("#imagedown").click(function() {
+	$(".imagedown").click(function() {
+		
 		$("formimagedown").attr({
 			
 			"action" : "${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" 
@@ -371,33 +349,9 @@ const formimagedown = $("#formimagedown");
 		formimagedown.submit();		
 		
 		
-	});
+	}); 
 	
-	
-	
-	const formimagedown2 = $("#formimagedown2");
-		
-		$("#imagedown").click(function() {
-			$("formimagedown").attr({
-				
-				"action" : "${contextPath}/download.do?boardNo=${article.boardNo}&imageFileName=${item.imageFileName}" 
-						
-			});
-			
-			formimagedown2.submit();		
-			
-			
-		});
-		
-		
-	
-	
-	
-	
-	
-	
-	
-	
+	 */
 	$("#list-btn").click(function() {
 	
 		console.log("목록 버튼이 클릭됨");
@@ -426,25 +380,11 @@ const formimagedown = $("#formimagedown");
 		  
 		  $('#i_imageFileName').attr(
 				  "name" , "file" + count++
-				);
-	  
-	 	  
+				);	 	  
   }); 	
-  
-	
-	
-
-	
-	
-	
-	
-	
+  	
 });
 
 </script>
-
-
-
-
 
 </html>

@@ -2,6 +2,7 @@ package com.spring.mvc.board.Controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,20 +63,13 @@ public class BoardController {
 	@GetMapping("/list4")
 	public String list4(SearchVO search, Model model, @ModelAttribute("p") SearchVO paging) { // list.jsp에서 페이징 정보를 가져와서
 																								// p로 뿌려준다.
-
-		// List<BoardVO> list = service.getArticleList();
-
-		// System.out.println("URL: /board/list GET -> result: " + list.size());
-
 		PageCreator pc = new PageCreator(); // PageVO의 객체와, 페이징 알고리즘을 실행하는 로직의 객체를 생성
 		pc.setPaging(search);
 
 		List<BoardVO_forth> list = service4.getArticleList_commentboard(search);
 		pc.setArticleTotalCount(service4.countArticles_commentboard(search));
 		List<ImageVO2> imageFileList = service4.selectImageFileList3_commentboard();
-		
-		
-
+	
 		model.addAttribute("articles", list);
 		model.addAttribute("pc", pc);
 		model.addAttribute("imageFileList", imageFileList);
@@ -84,9 +78,6 @@ public class BoardController {
 		return "board/list4";
 	}
 
-	// @PathVariable를 사용하면 URL에서 파라미터를 보내서 사용 할 수 있다.
-	// url path 로 들어오는 값을 해석 그대로 변수로 사용하겠다는 의미이다. --> list3.jsp에서 제목을 눌렀을때 파라미터로
-	// boardNo가 전송되는데 아마 이것을 받을것이다.
 	@GetMapping("/content4/{boardNo}") // 20
 	public String content4(@PathVariable Integer boardNo, HttpSession session, Model model,
 			@ModelAttribute("p") SearchVO paging, HttpServletRequest request, HttpServletResponse response) {
@@ -389,67 +380,7 @@ public class BoardController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +434,7 @@ public class BoardController {
 	}
 
 ////////////////////////////첨부파일 write Get요청
-	@GetMapping("/write3")
+	@GetMapping("/write_and_modify3")
 	public void write3(@RequestParam("page") int page, Model model, @ModelAttribute("p") SearchVO paging) { 
 																											
 		int boardNo = service.selectNewArticleNO3();
@@ -627,7 +558,7 @@ public class BoardController {
 	
 		
 
-		return "board/write3";
+		return "board/write_and_modify3";
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 다중첨부파일 수정
@@ -636,6 +567,38 @@ public class BoardController {
 	public ResponseEntity modify3(BoardVO_third article, RedirectAttributes ra, SearchVO searchvo,
 			MultipartHttpServletRequest multipartRequest, HttpServletResponse response ,  HttpServletRequest request) throws Exception {
 
+
+		int vo_num = article.getBoardNo();
+		
+		List<ImageVO> imageFileNOList = service.selectImageFileNO(vo_num); 
+
+
+			String [] GUBUN = request.getParameterValues("GUBUN");
+			
+			int[] GUBUNnums = Arrays.stream(GUBUN).mapToInt(Integer::parseInt).toArray();
+			
+			String[] imageFileNoindex = request.getParameterValues("imageFileNO");
+			int[] imgFileNoindex2 = Arrays.stream(imageFileNoindex).mapToInt(Integer::parseInt).toArray();
+			
+			for(int index = 0; index < GUBUNnums.length; index++) {
+				
+				if(GUBUNnums[index] == 0) {
+					
+					System.out.println(GUBUNnums[index]);
+					service.deleteImageFile(imgFileNoindex2);
+				}
+			}
+			
+//			int k = 0;
+//			if(GUBUNnums[k] == 0) {
+//
+//				service.deleteImageFile(null);
+//				
+//			}
+//			
+			
+			
+			
 		   String imageFileName = null;
 		
 		  multipartRequest.setCharacterEncoding("utf-8");
@@ -649,9 +612,7 @@ public class BoardController {
 				articleMap.put(name,value); 
 			}
 			
-			int vo_num = article.getBoardNo();
-			
-			List<ImageVO> imageFileNOList = service.selectImageFileNO(vo_num); 
+		
 			
 			
 			Integer imgNum = service.selectNewImageFileNO3();
@@ -659,13 +620,12 @@ public class BoardController {
 			// origin file name list
 			String[] originFileNames = request.getParameterValues("originalFileName");
 			
-			
-			
 			List<String> fileList = multiupload(multipartRequest);
+			
 			//길이에 상관없이 배열이 늘어난다.
 			List<ImageVO> imageFileList = new ArrayList<ImageVO>();
 			
-			if(fileList != null && fileList.size() != 0) {
+			if(fileList != null  && fileList.size() != 0) {
 				
 				int i =0;
 				//fileList에서 하나씩 fileName에 담고있다.
@@ -738,13 +698,8 @@ public class BoardController {
 				
 				}
 			
-				
-				
-			
-
-			
 			message = "<script>";
-			message += " alert('등록 되었습니다.');";
+			message += " alert('수정 되었습니다1');";
 			System.out.println("수정 성공시..");
 			message += " location.href='"+multipartRequest.getContextPath()+"/board/list3';"; // 등록이 된 이후에 이동될 URL을 message에 담았다.
 			message +=" </script>";
@@ -766,8 +721,7 @@ public class BoardController {
 			}
 			
 			message = " <script>";
-			message += " alert('글이 등록 되었습니다.');";
-			System.out.println("수정 실패시..");
+			message += " alert('수정 되었습니다2');";
 			message += " location.href='"+multipartRequest.getContextPath()+"/board/list3';";
 			message +=" </script>";
 			resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED);
@@ -860,26 +814,9 @@ public class BoardController {
 	@GetMapping("/content/{boardNo}") // 20
 	public String content(@PathVariable Integer boardNo, HttpSession session, Model model,
 			@ModelAttribute("p") SearchVO paging, HttpServletRequest request, HttpServletResponse response) {
-		// System.out.println("URL: /board/content => GET");
-		// System.out.println("parameter(글번호): " + boardNo); //20
 
 		String boardno2 = request.getParameter("boardNo");
-
-		// System.out.println("boardno2가 뭔데?" + boardno2);
 		ModelAndView view = new ModelAndView();
-
-//		int limitTime = 60;
-//		
-//		System.out.println("쿠키 생성중");
-//		
-//		Cookie viewcookie = new Cookie("viewCookie" , boardno2);// 쿠키생성: 이름: viewCookie, 값: Hello_Cookie
-//		viewcookie.setPath("/"); //쿠키의 저장경로를 시작 URL로 설정?
-//		viewcookie.setMaxAge(limitTime); //쿠키의 유효시간
-//		response.addCookie(viewcookie); //response 객체에 실려서 아용자의 웹브라우저로 저장된다.
-
-		// service.kepp
-
-		//////////////////////////////////////////////////////////////////////////////////
 
 		BoardVO vo = service.getArticle(boardNo, request, response);
 
@@ -892,12 +829,6 @@ public class BoardController {
 	@GetMapping("/modify") // 여기까지 글번호가 어떻게 전달되는거지? -->input type hidden으로 boardNo가 보내졌다.
 	public String modify(Integer boardNo, Model model, @ModelAttribute("p") PageVO paging, HttpServletRequest request,
 			HttpServletResponse response, SearchVO search) {
-
-		// System.out.println("URL: /board/content => GET");
-		// System.out.println("parameter(글번호): " + boardNo);
-
-		// PageCreator pc = new PageCreator(); //PageVO의 객체와, 페이징 알고리즘을 실행하는 로직의 객체를 생성
-		// pc.setPaging(search);
 
 		BoardVO vo = service.getArticle(boardNo, request, response);
 		System.out.println("Result Data: " + vo);
@@ -1230,12 +1161,6 @@ public class BoardController {
 		}
 
 		return resEnt;
-
-		// return "";
-		// System.out.println("parameter(board/): " + article);
-		// service.update2(article);
-		// ra.addFlashAttribute("msg" , "modSuccess");
-		// return "redirect:/board/list/?page=" + searchvo.getPage();
 	}
 
 	// Iterator(반복자): 컬렉션을 보관하고 있는 자료들을 순차적으로 접근하면서 처리할때 사용하는 클래스.
@@ -1244,7 +1169,7 @@ public class BoardController {
 			 * 
 			 * 컬렉션 내에 보관한 모든 내용을 출력하는 등의 작업을 먼저 하길 원한다면 Iterator를 사용하는 것은 좋은 선택입니다.
 			 * 
-			 * List로 저장한 객체나 set으로 저장한 객체를 Iterator 클래스로 모두 받을 수 있다. [받아오는 방법이 일정하다
+			 * List로 저장한 객체나 set으로 저장한 객체를 Iterator 클래스로 모두 받을 수 있다. [받아오는 방법이 일정하다]
 			 * 
 			 */
 
@@ -1479,12 +1404,15 @@ public class BoardController {
 		Iterator<String> fileNames = multipartRequest.getFileNames();
 		while(fileNames.hasNext()){ 
 			String fileName = fileNames.next();
+			
+						
 			MultipartFile mFile = multipartRequest.getFile(fileName);
-			String originalFileName=mFile.getOriginalFilename(); //Return the original filename in the client's filesystem. 
+			String originalFileName=mFile.getOriginalFilename();
 			
 			fileList.add(originalFileName); //여기서 파일 추가가되네
 			
 			File file = new File(ARTICLE_IMAGE_REPO +File.separator+ fileName);
+			
 			if(mFile.getSize()!=0){ 
 				if(! file.exists()){ 
 					if(file.getParentFile().mkdirs()){ 
@@ -1497,38 +1425,5 @@ public class BoardController {
 		}
 		return fileList;
 	}
-		
-
-//	//게시글 DB등록 요청 --> write.jsp에서 name값이 전달 된다. post요청
-//	@PostMapping("/write.do")
-//	public String write(@RequestParam("num") int num, BoardVO article, RedirectAttributes ra) {
-//		
-//		
-//		switch(num) {
-//		
-//		case 1: 
-//		
-//		//글쓰기
-//		service.insert(article);
-//		
-//		case 2:
-//		
-//		//수정
-//	    service.update(article);
-//	
-//		
-//		default:
-//				
-//	    break;
-//		}
-//		
-//		
-//		System.out.println("/board/write -> Post");
-//		System.out.println("post article이 넘어오는가?" + article);
-//		service.insert(article);
-//		ra.addFlashAttribute("msg","regSuccess"); // 이 구문을 아래
-//		
-//		return "redirect:/board/list"; //여기로 보낸다.
-//	}
-
+	
 }

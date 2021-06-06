@@ -33,8 +33,8 @@ public interface IBoardService {
 			//게시물 조회수 상승처리
 			void updateViewCnt3(Integer boardNo);
 			
-		
-			//게시글 삭제 기능
+			public void deleteImageFile(int[] imageFileNo);
+							//게시글 삭제 기능
 			void delete3(Integer boardNo);
 
 			//게시글,첨부파일 수정

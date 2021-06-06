@@ -25,7 +25,8 @@ public interface third_IBoardMapper {
 		//게시물 조회수 상승처리
 		void updateViewCnt3(Integer boardNo);
 		
-	
+		void deleteImageFile(int[] imageFileNo);
+		
 		//게시글 삭제 기능
 		void delete3(Integer boardNo);
 
